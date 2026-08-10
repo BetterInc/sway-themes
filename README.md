@@ -27,10 +27,9 @@ config pulls its colors through it.
     │   ├── foot-colors.ini      # terminal 16 colors, cursor, alpha
     │   ├── rofi.rasi            # launcher theme
     │   ├── swaylock.config      # lock screen colors/effects
-    │   ├── wallpaper.mp4        # animated (mpvpaper, used on AC power)
+    │   ├── wallpaper.mp4        # animated (mpvpaper, on AC) — NOT committed, see below
     │   └── wallpaper-still.png  # static (swaybg, used on battery)
-    └── purple/             # same files, violet palette (wallpapers are the
-                            # matrix ones hue-shifted +145° with ffmpeg)
+    └── purple/             # same files, violet palette
 ```
 
 ## Install
@@ -89,7 +88,19 @@ A theme without `wallpaper.mp4` falls back to the still image at all times.
 Tip: recolor the matrix wallpapers with ffmpeg's hue filter, e.g.
 `ffmpeg -i themes/matrix/wallpaper.mp4 -vf hue=h=200 -an out.mp4` for blue.
 
-## Wallpaper behavior
+## Wallpapers
+
+The animated `wallpaper.mp4` files are **not committed** (15–33 MB each).
+Download them free from Pixabay (Pixabay Content License, no attribution
+required) and drop them into the theme directory:
+
+| theme | video | save as |
+|---|---|---|
+| matrix | [green digital rain (4K)](https://pixabay.com/videos/matrix-code-thematrix-glitch-27693/) | `themes/matrix/wallpaper.mp4` |
+| purple | [dark plexus constellation (4K)](https://pixabay.com/videos/plexus-abstract-background-colorful-57860/) | `themes/purple/wallpaper.mp4` |
+
+Any loop you like works — each theme's `WALLPAPER-SOURCE.txt` has details.
+Without a video, the theme just uses its committed still image full-time.
 
 `config/sway/scripts/wallpaper-power.sh` plays the animated wallpaper via
 mpvpaper on AC power and swaps to the static PNG via swaybg on battery
