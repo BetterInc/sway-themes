@@ -3,31 +3,66 @@
 #
 #   sway-theme            list available themes (* = active)
 #   sway-theme <name>     switch to theme <name> and reload the desktop
+#
+# Themes are looked up in two places (user dir wins on name conflict):
+#   ~/.config/sway-themes/themes/<name>   your own themes, no repo fork needed
+#   <repo>/themes/<name>                  themes shipped with this repo
 set -e
 
 REPO=$(dirname "$(dirname "$(realpath "$0")")")
-THEMES_DIR="$REPO/themes"
+REPO_THEMES="$REPO/themes"
+USER_THEMES="$HOME/.config/sway-themes/themes"
 CURRENT_LINK="$HOME/.config/sway-themes/current"
 
 active=$(basename "$(readlink "$CURRENT_LINK" 2>/dev/null)" 2>/dev/null || true)
 
 if [ -z "$1" ]; then
     echo "Available themes:"
-    for t in "$THEMES_DIR"/*/; do
-        name=$(basename "$t")
-        [ "$name" = "$active" ] && echo "  * $name" || echo "    $name"
+    for dir in "$USER_THEMES" "$REPO_THEMES"; do
+        [ -d "$dir" ] || continue
+        origin=$([ "$dir" = "$USER_THEMES" ] && echo user || echo repo)
+        for t in "$dir"/*/; do
+            [ -d "$t" ] || continue
+            name=$(basename "$t")
+            mark=$([ "$name" = "$active" ] && echo '*' || echo ' ')
+            printf '  %s %-16s (%s)\n' "$mark" "$name" "$origin"
+        done
     done
     exit 0
 fi
 
 theme="$1"
-if [ ! -d "$THEMES_DIR/$theme" ]; then
-    echo "error: no such theme '$theme' (looked in $THEMES_DIR)" >&2
+if [ -d "$USER_THEMES/$theme" ]; then
+    theme_dir="$USER_THEMES/$theme"
+elif [ -d "$REPO_THEMES/$theme" ]; then
+    theme_dir="$REPO_THEMES/$theme"
+else
+    echo "error: no such theme '$theme' (looked in $USER_THEMES and $REPO_THEMES)" >&2
     exit 1
 fi
 
 mkdir -p "$HOME/.config/sway-themes"
-ln -sfn "$THEMES_DIR/$theme" "$CURRENT_LINK"
+ln -sfn "$theme_dir" "$CURRENT_LINK"
+
+# Recolor already-running terminals in place: push the new palette as OSC
+# escape sequences (OSC 4 = palette, 10/11/12 = fg/bg/cursor) to every PTY
+# we own. foot applies them immediately; no restart needed.
+push_terminal_colors() {
+    ini="$CURRENT_LINK/foot-colors.ini"
+    [ -f "$ini" ] || return 0
+    seq=$(awk -F= '
+        /^\[/            { section=$0 }
+        /^regular[0-7]=/ { printf "\033]4;%d;#%s\033\\",   substr($1,8,1),   $2 }
+        /^bright[0-7]=/  { printf "\033]4;%d;#%s\033\\",   substr($1,7,1)+8, $2 }
+        /^foreground=/   { printf "\033]10;#%s\033\\", $2 }
+        /^background=/   { printf "\033]11;#%s\033\\", $2 }
+        section=="[cursor]" && /^color=/ { n=split($2,c," "); if (n>1) printf "\033]12;#%s\033\\", c[2] }
+    ' "$ini")
+    for pty in /dev/pts/[0-9]*; do
+        [ -w "$pty" ] && printf '%s' "$seq" > "$pty" 2>/dev/null || true
+    done
+}
+push_terminal_colors
 
 # Re-apply wallpaper: kill whatever is drawing it and clear the power-state
 # cache so wallpaper-power.sh starts fresh with the new theme's files.
@@ -41,5 +76,4 @@ if [ -n "$SWAYSOCK" ] || pgrep -x sway >/dev/null; then
     swaymsg reload >/dev/null 2>&1 || true
 fi
 
-echo "Switched to '$theme'."
-echo "note: already-open foot terminals keep their old colors; new ones use the theme."
+echo "Switched to '$theme' ($theme_dir)."

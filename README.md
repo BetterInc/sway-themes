@@ -50,20 +50,35 @@ sway-theme purple     # switch: updates the symlink, restarts wallpaper, reloads
 ```
 
 Everything applies live, no re-login needed: waybar, window borders, wallpaper,
-rofi and swaylock update immediately; open foot terminals keep their colors and
-new ones use the new theme. A re-login is only ever needed when the compositor
-binary itself changes (installing or upgrading swayfx) — never for theme
-switches or config changes.
+rofi and swaylock update immediately — and already-open foot terminals are
+recolored in place too (the switcher pushes the palette as OSC 4/10/11/12
+escape sequences to every PTY, pywal-style). A re-login is only ever needed
+when the compositor binary itself changes (installing or upgrading swayfx) —
+never for theme switches or config changes.
 
-## Add a theme
+## Add your own theme (no fork needed)
 
-Copy an existing theme dir and recolor:
+`sway-theme` looks for themes in two places, so you can make your own without
+touching this repo:
+
+```
+~/.config/sway-themes/themes/<name>    your themes (wins on name conflict)
+<repo>/themes/<name>                   themes shipped with the repo
+```
+
+Start from an existing theme and recolor:
 
 ```sh
-cp -r themes/matrix themes/mytheme
-$EDITOR themes/mytheme/*
+mkdir -p ~/.config/sway-themes/themes
+cp -r ~/sway-themes/themes/matrix ~/.config/sway-themes/themes/mytheme
+$EDITOR ~/.config/sway-themes/themes/mytheme/*
 sway-theme mytheme
 ```
+
+A theme is just a directory with these files (all optional except the colors
+you actually use): `sway-colors.conf`, `waybar-colors.css`, `foot-colors.ini`,
+`rofi.rasi`, `swaylock.config`, `wallpaper.mp4`, `wallpaper-still.png`.
+Themes you want to share can be PR'd into `themes/` here.
 
 A theme without `wallpaper.mp4` falls back to the still image at all times.
 Tip: recolor the matrix wallpapers with ffmpeg's hue filter, e.g.

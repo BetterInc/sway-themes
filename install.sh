@@ -65,8 +65,8 @@ link "../sway-themes/current/swaylock.config"   "$CONF/swaylock/config"
 link "$REPO/bin/sway-theme"               "$HOME/.local/bin/sway-theme"
 
 # ------------------------------------------------------------- default theme
+mkdir -p "$CONF/sway-themes/themes"   # drop your own themes here
 if [ ! -e "$CONF/sway-themes/current" ]; then
-    mkdir -p "$CONF/sway-themes"
     ln -sfn "$REPO/themes/$DEFAULT_THEME" "$CONF/sway-themes/current"
     echo "==> Activated default theme: $DEFAULT_THEME"
 fi
