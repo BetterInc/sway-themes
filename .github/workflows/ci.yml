@@ -6,6 +6,8 @@ on:
   pull_request:
 
 jobs:
+  # Per-distro: packages resolve, SwayFX + swaylock-effects + mpvpaper build
+  # from source, symlinks land, theme switch flips, uninstall restores.
   install:
     name: install (${{ matrix.distro }})
     runs-on: ubuntu-latest
@@ -61,26 +63,42 @@ jobs:
           sway-theme purple
           readlink -f "$HOME/.config/sway-themes/current" | grep -q themes/purple
 
-      # SwayFX 0.3.2 (wlroots 0.16) needs a DRM render node for its GLES2-only
-      # renderer, and GH-hosted runners have no /dev/dri — so the boot test
-      # runs the rice under the distro's reference sway with the pixman
-      # software renderer instead. SwayFX itself is still fully built and
-      # installed above; the config is vanilla-compatible by design (swayfx
-      # eye-candy commands are logged as unknown and skipped).
-      - name: use it — boot the rice headless, spawn foot, live-switch theme, screenshot
+      - name: uninstall round-trip
         run: |
           set -ex
-          case "${{ matrix.distro }}" in
-            debian|ubuntu) apt-get install -y sway dbus grim procps fonts-dejavu-core ;;
-            arch)          pacman -S --needed --noconfirm sway dbus grim procps-ng ttf-dejavu ;;
-            fedora)        dnf install -y sway dbus grim procps-ng dejavu-sans-mono-fonts ;;
-          esac
-          export XDG_RUNTIME_DIR=/tmp/xdg; mkdir -p -m 700 "$XDG_RUNTIME_DIR"
+          ./uninstall.sh
+          test ! -L "$HOME/.config/sway/config"
+          test ! -L "$HOME/.config/dunst/dunstrc"
+
+  # Boot the rice for real. Runs directly on the runner VM (not a container),
+  # the way other wlroots projects CI headless sway (e.g. golang-design/
+  # clipboard): non-root user, working dbus, no container security policies.
+  # SwayFX itself can't render on GH runners (its GLES2-only wlroots 0.16
+  # renderer needs a /dev/dri node), so the boot uses the reference sway with
+  # the pixman software renderer — the configs are vanilla-compatible by
+  # design, and SwayFX is fully built and verified in the matrix above.
+  boot:
+    name: boot the rice (headless sway, pixman)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install rice (configs only, distro sway)
+        run: |
+          set -ex
+          sudo apt-get update
+          SWAY_THEMES_NO_BUILD=1 ./install.sh
+          sudo apt-get install -y sway grim dbus
+
+      - name: boot, spawn foot, live-switch theme, screenshot
+        run: |
+          set -ex
+          export XDG_RUNTIME_DIR="$RUNNER_TEMP/xdg"; mkdir -p -m 700 "$XDG_RUNTIME_DIR"
           export PATH="$HOME/.local/bin:$PATH"
           export WLR_BACKENDS=headless WLR_HEADLESS_OUTPUTS=1 WLR_LIBINPUT_NO_DEVICES=1 WLR_RENDERER=pixman
           sway-theme matrix
           dbus-run-session -- sh -ec '
-            /usr/bin/sway -d >/tmp/sway.log 2>&1 &
+            sway -d >/tmp/sway.log 2>&1 &
             for i in $(seq 1 30); do
               SWAYSOCK=$(find "$XDG_RUNTIME_DIR" -maxdepth 1 -name "sway-ipc.*.sock" 2>/dev/null | head -1)
               [ -n "$SWAYSOCK" ] && [ -S "$SWAYSOCK" ] && break; sleep 1
@@ -99,19 +117,12 @@ jobs:
             sway-theme purple; sleep 3
             readlink -f "$HOME/.config/sway-themes/current" | grep -q themes/purple
             swaymsg -t get_tree | grep -qi foot   # session survived the reload
-            grim /tmp/ci-screenshot-${{ matrix.distro }}.png
+            grim /tmp/ci-screenshot.png
             swaymsg exit || true
           ' || { cat /tmp/sway.log; exit 1; }
 
       - name: upload screenshot of the running rice
         uses: actions/upload-artifact@v4
         with:
-          name: ci-screenshot-${{ matrix.distro }}
-          path: /tmp/ci-screenshot-${{ matrix.distro }}.png
-
-      - name: uninstall round-trip
-        run: |
-          set -ex
-          ./uninstall.sh
-          test ! -L "$HOME/.config/sway/config"
-          test ! -L "$HOME/.config/dunst/dunstrc"
+          name: ci-screenshot
+          path: /tmp/ci-screenshot.png

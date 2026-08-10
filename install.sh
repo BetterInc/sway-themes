@@ -49,6 +49,7 @@ need_build=""
 sway --version 2>/dev/null | grep -q '^sway version 0\.3' || need_build="swayfx"
 command -v swaylock >/dev/null || need_build="$need_build swaylock-effects"
 command -v mpvpaper >/dev/null || need_build="$need_build mpvpaper"
+[ -n "$SWAY_THEMES_NO_BUILD" ] && need_build=""   # CI/boot-test: configs only
 if [ -n "$need_build" ]; then
     aur=""
     for h in paru yay; do command -v "$h" >/dev/null && aur=$h && break; done
