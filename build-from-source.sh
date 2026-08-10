@@ -56,7 +56,8 @@ else
 fi
 
 mkdir -p "$SRC"
-export PKG_CONFIG_PATH="$PREFIX/lib/$(gcc -dumpmachine)/pkgconfig:$PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
+# cover every libdir convention: Debian multiarch, Fedora lib64, plain lib
+export PKG_CONFIG_PATH="$PREFIX/lib/$(gcc -dumpmachine)/pkgconfig:$PREFIX/lib64/pkgconfig:$PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
 
 # --------------------------------------------------------------- wlroots 0.16.2 (static)
 if [ -n "$FORCE" ] || ! pkg-config --atleast-version=0.16 wlroots 2>/dev/null; then
@@ -64,7 +65,7 @@ if [ -n "$FORCE" ] || ! pkg-config --atleast-version=0.16 wlroots 2>/dev/null; t
     rm -rf "$SRC/wlroots"
     git clone --depth 1 -b 0.16.2 https://gitlab.freedesktop.org/wlroots/wlroots.git "$SRC/wlroots"
     meson setup "$SRC/wlroots/build" "$SRC/wlroots" --prefix="$PREFIX" \
-        --buildtype=release -Ddefault_library=static -Dwerror=false \
+        --libdir=lib --buildtype=release -Ddefault_library=static -Dwerror=false \
         -Dexamples=false -Dxwayland=enabled
     ninja -C "$SRC/wlroots/build" -j"$JOBS" install
 fi
