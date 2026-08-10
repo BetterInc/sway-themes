@@ -1,6 +1,10 @@
 # sway-themes
 
-My SwayFX rice with switchable themes (Matrix green, neon purple, ...).
+[![ci](https://github.com/BetterInc/sway-themes/actions/workflows/ci.yml/badge.svg)](https://github.com/BetterInc/sway-themes/actions/workflows/ci.yml)
+
+My SwayFX rice with switchable themes (Matrix green, neon purple, ...). CI
+installs the full rice (including the SwayFX source build) on Debian 12,
+Ubuntu 24.04, Arch and Fedora, then boots it headless and screenshots it.
 
 | matrix | purple |
 |---|---|
