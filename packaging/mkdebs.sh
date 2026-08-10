@@ -11,6 +11,11 @@ set -e
 
 VERSION="${1:?usage: mkdebs.sh <version>}"
 VERSION="${VERSION#v}"
+# component packages are versioned by their upstream version, suffixed with
+# the sway-themes release tag so apt upgrade ordering follows our releases
+SWAYFX_V="0.3.2+bi${VERSION}"
+SWAYLOCK_V="1.7.0+bi${VERSION}"
+MPVPAPER_V="1.7+bi${VERSION}"
 REPO=$(dirname "$(dirname "$(realpath "$0")")")
 OUT="$REPO/out"
 SRC="$HOME/.local/src"
@@ -42,18 +47,18 @@ for dest in files.values():
 EOF
 }
 
-# mkdeb <name> <arch> <stagedir> <depends> [extra control lines...]
+# mkdeb <name> <version> <arch> <stagedir> <depends> [extra control lines...]
 mkdeb() {
-    name=$1; arch=$2; stage=$3; depends=$4; shift 4
+    name=$1; ver=$2; arch=$3; stage=$4; depends=$5; shift 5
     mkdir -p "$stage/DEBIAN"
     { echo "Package: $name"
-      echo "Version: $VERSION"
+      echo "Version: $ver"
       echo "Architecture: $arch"
       echo "Maintainer: $MAINT"
       echo "Depends: $depends"
       for line in "$@"; do echo "$line"; done
     } > "$stage/DEBIAN/control"
-    dpkg-deb --build --root-owner-group "$stage" "$OUT/${name}_${VERSION}_${arch}.deb"
+    dpkg-deb --build --root-owner-group "$stage" "$OUT/${name}_${ver}_${arch}.deb"
 }
 
 # shlib_deps <stagedir> <binary...> — compute Depends via dpkg-shlibdeps
@@ -68,7 +73,7 @@ echo "==> Packaging swayfx (ships /usr/bin/sway, wlroots statically linked)"
 S=/tmp/stage-swayfx; rm -rf $S
 stage_from_build "$SRC/swayfx/build" $S
 deps=$(shlib_deps $S usr/bin/sway usr/bin/swaymsg usr/bin/swaybar usr/bin/swaynag)
-mkdeb swayfx amd64 $S "$deps" \
+mkdeb swayfx "$SWAYFX_V" amd64 $S "$deps" \
     "Conflicts: sway" "Provides: sway" "Replaces: sway" \
     "Section: x11" "Priority: optional" \
     "Homepage: https://github.com/WillPower3309/swayfx" \
@@ -80,7 +85,7 @@ echo "==> Packaging swaylock-effects (ships /usr/bin/swaylock)"
 S=/tmp/stage-swaylock; rm -rf $S
 stage_from_build "$SRC/swaylock-effects/build" $S
 deps=$(shlib_deps $S usr/bin/swaylock)
-mkdeb swaylock-effects amd64 $S "$deps" \
+mkdeb swaylock-effects "$SWAYLOCK_V" amd64 $S "$deps" \
     "Conflicts: swaylock" "Provides: swaylock" "Replaces: swaylock" \
     "Section: x11" "Priority: optional" \
     "Homepage: https://github.com/jirutka/swaylock-effects" \
@@ -91,7 +96,7 @@ echo "==> Packaging mpvpaper"
 S=/tmp/stage-mpvpaper; rm -rf $S
 stage_from_build "$SRC/mpvpaper/build" $S
 deps=$(shlib_deps $S usr/bin/mpvpaper)
-mkdeb mpvpaper amd64 $S "$deps" \
+mkdeb mpvpaper "$MPVPAPER_V" amd64 $S "$deps" \
     "Section: video" "Priority: optional" \
     "Homepage: https://github.com/GhostNaN/mpvpaper" \
     "Description: video wallpaper program for wlroots compositors
@@ -116,7 +121,7 @@ SETUP
 chmod 755 $S/usr/bin/sway-themes-setup $S/usr/share/sway-themes/bin/sway-theme \
     $S/usr/share/sway-themes/install.sh $S/usr/share/sway-themes/uninstall.sh \
     $S/usr/share/sway-themes/build-from-source.sh
-mkdeb sway-themes all $S \
+mkdeb sway-themes "$VERSION" all $S \
     "waybar, foot, rofi, swaybg, swayidle, dunst, fonts-font-awesome" \
     "Recommends: swayfx, swaylock-effects, mpvpaper, ffmpeg" \
     "Section: x11" "Priority: optional" \

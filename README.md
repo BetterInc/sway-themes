@@ -63,6 +63,32 @@ unzip into `~/.local/share/fonts`, run `fc-cache -f`.
 
 ## Install
 
+### Via APT (Debian 12 / Ubuntu 24.04, amd64) — recommended
+
+Pre-built packages, including a compiled SwayFX (no source build needed),
+from our [APT repository](https://betterinc.github.io/sway-themes/):
+
+```sh
+sudo install -d /etc/apt/keyrings
+curl -fsSL https://betterinc.github.io/sway-themes/apt/public.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/sway-themes.gpg
+
+echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/sway-themes.gpg] https://betterinc.github.io/sway-themes/apt stable main" | \
+  sudo tee /etc/apt/sources.list.d/sway-themes.list
+
+sudo apt update
+sudo apt install sway-themes swayfx swaylock-effects mpvpaper
+
+sway-themes-setup     # per-user activation (symlinks into ~/.config, backups kept)
+```
+
+The same `.deb` files are attached to every
+[GitHub release](https://github.com/BetterInc/sway-themes/releases) if you
+prefer `apt install ./file.deb`. Note: `swayfx` replaces the stock `sway`
+package (it ships `/usr/bin/sway`), and `swaylock-effects` replaces `swaylock`.
+
+### From source (any distro)
+
 ```sh
 git clone https://github.com/BetterInc/sway-themes ~/sway-themes
 ~/sway-themes/install.sh
