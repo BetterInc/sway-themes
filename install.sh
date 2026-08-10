@@ -25,9 +25,16 @@ echo "==> sway-themes installer (repo: $REPO)"
 # Platform-generic: the rice itself is just symlinks in $HOME. Packaged
 # dependencies are installed via whichever package manager exists; anything
 # your distro doesn't package is built from source by build-from-source.sh.
+# Installed via a distro package (e.g. /usr/share/sway-themes)? Then all
+# dependencies and binaries are the package manager's job — this script only
+# needs to do the per-user symlinking below.
+case "$REPO" in /usr/*) SWAY_THEMES_NO_DEPS=1; SWAY_THEMES_NO_BUILD=1 ;; esac
+
 SUDO=""; [ "$(id -u)" != 0 ] && SUDO=sudo
 echo "==> Installing packaged dependencies (sudo required)"
-if command -v apt-get >/dev/null; then
+if [ -n "$SWAY_THEMES_NO_DEPS" ]; then
+    echo "    (skipped: packaged install, dependencies handled by the package)"
+elif command -v apt-get >/dev/null; then
     $SUDO apt-get install -y waybar foot rofi swaybg swayidle dunst ffmpeg \
         fonts-font-awesome
 elif command -v pacman >/dev/null; then

@@ -122,8 +122,8 @@ chmod 755 $S/usr/bin/sway-themes-setup $S/usr/share/sway-themes/bin/sway-theme \
     $S/usr/share/sway-themes/install.sh $S/usr/share/sway-themes/uninstall.sh \
     $S/usr/share/sway-themes/build-from-source.sh
 mkdeb sway-themes "$VERSION" all $S \
-    "waybar, foot, rofi, swaybg, swayidle, dunst, fonts-font-awesome" \
-    "Recommends: swayfx, swaylock-effects, mpvpaper, ffmpeg" \
+    "swayfx, swaylock-effects, waybar, foot, rofi, swaybg, swayidle, dunst, fonts-font-awesome" \
+    "Recommends: mpvpaper, ffmpeg" \
     "Section: x11" "Priority: optional" \
     "Homepage: https://github.com/BetterInc/sway-themes" \
     "Description: themeable SwayFX rice (matrix, purple, ...)
