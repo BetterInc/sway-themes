@@ -1,0 +1,5 @@
+Component: main
+Origin: BetterInc
+Label: sway-themes
+Architecture: amd64
+Description: BetterInc sway-themes APT repository

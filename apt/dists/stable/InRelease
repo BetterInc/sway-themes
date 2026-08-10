@@ -1,0 +1,38 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Origin: BetterInc
+Label: sway-themes
+Codename: stable
+Date: Mon, 10 Aug 2026 16:11:06 UTC
+Architectures: amd64
+Components: main
+Description: BetterInc sway-themes APT repository
+MD5Sum:
+ bcc56c7f6a7f589e86dd2d2c72e3c77c 3465 main/binary-amd64/Packages
+ 339eb7e120faf8d6e8ef2e48d7aa2b69 1460 main/binary-amd64/Packages.gz
+ 800769e8feae0df70139e104eccf4d2b 123 main/binary-amd64/Release
+SHA1:
+ be4927cbd39f4f41c4b7571c175fcd56f871c734 3465 main/binary-amd64/Packages
+ c45090ec8f25fe3e57c21a37b09d5ba4bbdbe36c 1460 main/binary-amd64/Packages.gz
+ c7768302f0d51025aa2b4f244ee977d7676d4a93 123 main/binary-amd64/Release
+SHA256:
+ d8801d738f61427940ce683bb0bebdcd8ff69edcbea05a483a75a59aa84326ad 3465 main/binary-amd64/Packages
+ af0f0c80743e671446c56c56b0eb6411a9bb90418e17b7383cd9343f3644c5bd 1460 main/binary-amd64/Packages.gz
+ 8626092e855d03c56ea1a548b938058a6dec0731b7df872f96a578416ed54219 123 main/binary-amd64/Release
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEmHvt5QhvzLK57CD+csmlbtaBrHQFAmp5+BoACgkQcsmlbtaB
+rHSC9hAAjuRt1jjLlf+Nkt48YCe1IlAl9rkxH7YtbAvWorFtqZVQFfl2g3fAXdOd
+iBshC1ROTD13qAywugz6EmcaHyEFGwak2ay9Qpbqa4dEM4OIY+ZioXFV/apUDZvV
+XDC5udthm0jBPVlAMAf4Kezga9ELaOqQVH8hWVo5kLiz1pecQpYt3EBsMviORBBj
+qZRwNMrba8r4pehJv2wjmH5oA/2Ag6LkrUZy/vnQjcax5iXP3jucr0IcPSi1lyWJ
+qTmRYGWRO25J8EC6rBCwBz/CSVu1Jmpq8lpxviagWjiskVYFV1+hml3Pi+IVTCZa
+1pMqWHDy+lYVoLAtGZ4ORnGk7XkApRc10km7sRf4I66MHkHNf/aPsXLCcQPsUGol
+F4agN99V5ZHI44+Tvx3OZvUXD3InV1/h8V2R4vCZFY/1xANj4545Cbs4fvQdEV7o
+G95d1SrtFxsMvRRzYE0l9+08T6FIo4Sa257oG7gcs0AG4j0CeZ6DHdVKRJZutpPc
++ZAM0ZvVlxxklqZZgIizg2wOZBEUtAAAAZGskoQa9mnJW7ZiDRZRgF31I/V5tI+4
+NQrCTEShcYMy4U5uaT9HKSSRksn/8lsQp2C/M5BfJo5RHqRySJMSb3vlsPz9BQPT
+u5gEMTBTtT+Mlz4QhxQFmsSj1ZCnASc5TDqLWa3+tjRgqS8qjK4=
+=dXLt
+-----END PGP SIGNATURE-----

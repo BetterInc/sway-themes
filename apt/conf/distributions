@@ -1,0 +1,7 @@
+Origin: BetterInc
+Label: sway-themes
+Codename: stable
+Architectures: amd64
+Components: main
+Description: BetterInc sway-themes APT repository
+SignWith: 72C9A56ED681AC74

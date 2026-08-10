@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head><title>BetterInc sway-themes APT repository</title></head>
+<body>
+  <h1>sway-themes APT repository</h1>
+  <p>Debian 12 / Ubuntu 24.04, amd64.</p>
+  <pre>
+sudo install -d /etc/apt/keyrings
+curl -fsSL https://betterinc.github.io/sway-themes/apt/public.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/sway-themes.gpg
+
+echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/sway-themes.gpg] https://betterinc.github.io/sway-themes/apt stable main" | \
+  sudo tee /etc/apt/sources.list.d/sway-themes.list
+
+sudo apt update
+sudo apt install sway-themes swayfx swaylock-effects mpvpaper
+sway-themes-setup     # per-user activation (symlinks, backups kept)
+  </pre>
+  <p><a href="https://github.com/BetterInc/sway-themes">source on GitHub</a></p>
+</body>
+</html>
