@@ -4,6 +4,17 @@
 # from this repo into ~/.config, and activates the default theme (matrix).
 set -e
 
+# If anything fails halfway: nothing is applied to your running session until
+# sway reloads, backups are never deleted, and this script is idempotent.
+trap 's=$?; [ $s -ne 0 ] && {
+    echo ""
+    echo "!! install failed (exit $s) — your running desktop is NOT affected"
+    echo "   (changes only apply on the next sway reload/login)."
+    echo "   Fix the issue and re-run ./install.sh — it is safe to re-run and"
+    echo "   will simply complete the remaining steps (backups are kept)."
+    echo "   Or roll everything back with ./uninstall.sh."
+}' EXIT
+
 REPO=$(dirname "$(realpath "$0")")
 CONF="$HOME/.config"
 DEFAULT_THEME=matrix
