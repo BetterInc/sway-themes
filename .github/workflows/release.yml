@@ -1,0 +1,138 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+      - "*.*.*"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build-debs:
+    name: build .debs (debian 12, amd64)
+    runs-on: ubuntu-latest
+    container: debian:12
+    steps:
+      - name: bootstrap
+        run: apt-get update && apt-get install -y git ca-certificates python3
+
+      - uses: actions/checkout@v4
+
+      - name: build packages
+        run: sh packaging/mkdebs.sh "${GITHUB_REF_NAME}"
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: debs
+          path: out/*.deb
+
+  release:
+    name: GitHub release
+    needs: build-debs
+    runs-on: ubuntu-latest
+    steps:
+      - name: download packages
+        uses: actions/download-artifact@v4
+        with:
+          name: debs
+          path: debs
+
+      - name: create release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: debs/*.deb
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-apt:
+    name: publish APT repository (gh-pages)
+    needs: build-debs
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+        continue-on-error: true
+
+      - name: init gh-pages if needed
+        run: mkdir -p gh-pages/apt/conf
+
+      - name: download packages
+        uses: actions/download-artifact@v4
+        with:
+          name: debs
+          path: debs
+
+      - name: install reprepro
+        run: sudo apt-get update && sudo apt-get install -y reprepro
+
+      - name: import GPG signing key
+        run: |
+          # The key is required: generating a fresh key per release would
+          # break apt verification for everyone who already added the repo.
+          test -n "${{ secrets.GPG_PRIVATE_KEY }}" || { echo "GPG_PRIVATE_KEY secret missing"; exit 1; }
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+          gpg --list-secret-keys --keyid-format LONG
+
+      - name: reprepro config
+        run: |
+          GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | awk '/^sec/{split($2,a,"/"); print a[2]; exit}')
+          cat > gh-pages/apt/conf/distributions <<EOF
+          Origin: BetterInc
+          Label: sway-themes
+          Codename: stable
+          Architectures: amd64
+          Components: main
+          Description: BetterInc sway-themes APT repository
+          SignWith: ${GPG_KEY_ID}
+          EOF
+
+      - name: add packages
+        run: |
+          cd gh-pages/apt
+          for deb in ../../debs/*.deb; do
+            reprepro includedeb stable "$deb"
+          done
+
+      - name: export public key + index
+        run: |
+          gpg --armor --export > gh-pages/apt/public.key
+          touch gh-pages/.nojekyll
+          cat > gh-pages/index.html <<'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head><title>BetterInc sway-themes APT repository</title></head>
+          <body>
+            <h1>sway-themes APT repository</h1>
+            <p>Debian 12 / Ubuntu 24.04, amd64.</p>
+            <pre>
+          sudo install -d /etc/apt/keyrings
+          curl -fsSL https://betterinc.github.io/sway-themes/apt/public.key | \
+            sudo gpg --dearmor -o /etc/apt/keyrings/sway-themes.gpg
+
+          echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/sway-themes.gpg] https://betterinc.github.io/sway-themes/apt stable main" | \
+            sudo tee /etc/apt/sources.list.d/sway-themes.list
+
+          sudo apt update
+          sudo apt install sway-themes swayfx swaylock-effects mpvpaper
+          sway-themes-setup     # per-user activation (symlinks, backups kept)
+            </pre>
+            <p><a href="https://github.com/BetterInc/sway-themes">source on GitHub</a></p>
+          </body>
+          </html>
+          EOF
+
+      - name: deploy gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gh-pages
+          force_orphan: false
