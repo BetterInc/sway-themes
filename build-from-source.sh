@@ -15,8 +15,10 @@ SRC="$HOME/.local/src"
 JOBS=$(nproc 2>/dev/null || echo 4)
 FORCE=""; [ "$1" = "--force" ] && FORCE=1
 
-# All build dependencies (runtime deps are handled by install.sh):
-BUILD_DEPS="meson ninja-build cmake pkg-config git wayland-protocols
+SUDO=""; [ "$(id -u)" != 0 ] && SUDO=sudo
+
+# Build dependencies per package manager (runtime deps: install.sh).
+APT_DEPS="meson ninja-build cmake pkg-config git wayland-protocols
 libwayland-dev libegl1-mesa-dev libgles2-mesa-dev libdrm-dev libgbm-dev
 libinput-dev libxkbcommon-dev libudev-dev libpixman-1-dev libseat-dev
 libvulkan-dev glslang-tools hwdata xwayland
@@ -26,9 +28,32 @@ libxcb-xinput-dev libxcb-shm0-dev libxcb-ewmh-dev
 libjson-c-dev libpcre2-dev libpango1.0-dev libcairo2-dev
 libgdk-pixbuf-2.0-dev scdoc libpam0g-dev libmpv-dev"
 
-echo "==> Installing build dependencies (sudo required)"
+PACMAN_DEPS="meson ninja cmake pkgconf git wayland wayland-protocols mesa
+libdrm libinput libxkbcommon pixman seatd vulkan-headers vulkan-icd-loader
+glslang hwdata xorg-xwayland libxcb xcb-util-wm xcb-util-image
+xcb-util-renderutil xcb-util-errors json-c pcre2 pango cairo gdk-pixbuf2
+scdoc pam mpv"
+
+DNF_DEPS="meson ninja-build cmake pkgconf-pkg-config git wayland-devel
+wayland-protocols-devel mesa-libEGL-devel mesa-libgbm-devel libdrm-devel
+libinput-devel libxkbcommon-devel systemd-devel pixman-devel libseat-devel
+vulkan-loader-devel glslang hwdata libxcb-devel xcb-util-wm-devel
+xcb-util-image-devel xcb-util-renderutil-devel json-c-devel pcre2-devel
+pango-devel cairo-devel gdk-pixbuf2-devel scdoc pam-devel mpv-libs-devel
+xorg-x11-server-Xwayland-devel"
+
+echo "==> Installing build dependencies"
 # shellcheck disable=SC2086
-sudo apt install -y $BUILD_DEPS
+if command -v apt-get >/dev/null; then
+    $SUDO apt-get install -y $APT_DEPS
+elif command -v pacman >/dev/null; then
+    $SUDO pacman -S --needed --noconfirm $PACMAN_DEPS
+elif command -v dnf >/dev/null; then
+    $SUDO dnf install -y $DNF_DEPS
+else
+    echo "!! unknown package manager — make sure meson/ninja and the wayland,"
+    echo "   wlroots, pam and mpv dev headers are installed, then re-run."
+fi
 
 mkdir -p "$SRC"
 export PKG_CONFIG_PATH="$PREFIX/lib/$(gcc -dumpmachine)/pkgconfig:$PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
@@ -39,7 +64,7 @@ if [ -n "$FORCE" ] || ! pkg-config --atleast-version=0.16 wlroots 2>/dev/null; t
     rm -rf "$SRC/wlroots"
     git clone --depth 1 -b 0.16.2 https://gitlab.freedesktop.org/wlroots/wlroots.git "$SRC/wlroots"
     meson setup "$SRC/wlroots/build" "$SRC/wlroots" --prefix="$PREFIX" \
-        --buildtype=release -Ddefault_library=static \
+        --buildtype=release -Ddefault_library=static -Dwerror=false \
         -Dexamples=false -Dxwayland=enabled
     ninja -C "$SRC/wlroots/build" -j"$JOBS" install
 fi

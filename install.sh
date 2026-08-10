@@ -21,25 +21,44 @@ DEFAULT_THEME=matrix
 
 echo "==> sway-themes installer (repo: $REPO)"
 
-# ---------------------------------------------------------------- apt deps
-if command -v apt >/dev/null; then
-    echo "==> Installing apt dependencies (sudo required)"
-    sudo apt install -y waybar foot rofi swaybg swayidle dunst ffmpeg \
+# ------------------------------------------------------------ dependencies
+# Platform-generic: the rice itself is just symlinks in $HOME. Packaged
+# dependencies are installed via whichever package manager exists; anything
+# your distro doesn't package is built from source by build-from-source.sh.
+SUDO=""; [ "$(id -u)" != 0 ] && SUDO=sudo
+echo "==> Installing packaged dependencies (sudo required)"
+if command -v apt-get >/dev/null; then
+    $SUDO apt-get install -y waybar foot rofi swaybg swayidle dunst ffmpeg \
         fonts-font-awesome
+elif command -v pacman >/dev/null; then
+    rofi_pkg=rofi; pacman -Si rofi-wayland >/dev/null 2>&1 && rofi_pkg=rofi-wayland
+    $SUDO pacman -S --needed --noconfirm waybar foot "$rofi_pkg" swaybg swayidle \
+        dunst ffmpeg otf-font-awesome ttf-jetbrains-mono-nerd
+elif command -v dnf >/dev/null; then
+    $SUDO dnf install -y waybar foot rofi-wayland swaybg swayidle dunst ffmpeg \
+        fontawesome-fonts
 else
-    echo "!! apt not found — install manually: waybar foot rofi swaybg swayidle"
+    echo "!! unknown package manager — install these yourself, then re-run:"
+    echo "   waybar foot rofi(-wayland) swaybg swayidle dunst ffmpeg font-awesome"
 fi
 
-# Components NOT in the Debian repos — SwayFX (required: the whole look
-# depends on rounded corners/blur/shadows), swaylock-effects and mpvpaper.
-# build-from-source.sh builds whatever is missing into ~/.local.
+# SwayFX (required: the whole look depends on rounded corners/blur/shadows),
+# swaylock-effects and mpvpaper are rarely packaged. Prefer an AUR helper if
+# one exists; otherwise build-from-source.sh builds them into ~/.local.
 need_build=""
 sway --version 2>/dev/null | grep -q '^sway version 0\.3' || need_build="swayfx"
 command -v swaylock >/dev/null || need_build="$need_build swaylock-effects"
 command -v mpvpaper >/dev/null || need_build="$need_build mpvpaper"
 if [ -n "$need_build" ]; then
-    echo "==> Building missing components from source:$need_build"
-    "$REPO/build-from-source.sh"
+    aur=""
+    for h in paru yay; do command -v "$h" >/dev/null && aur=$h && break; done
+    if [ -n "$aur" ]; then
+        echo "==> Installing missing components from the AUR:$need_build"
+        "$aur" -S --needed swayfx swaylock-effects-git mpvpaper
+    else
+        echo "==> Building missing components from source:$need_build"
+        "$REPO/build-from-source.sh"
+    fi
 fi
 fc-list 2>/dev/null | grep -qi 'JetBrainsMono Nerd' || echo "!! JetBrainsMono Nerd Font not installed — https://github.com/ryanoasis/nerd-fonts, unzip into ~/.local/share/fonts, run fc-cache -f"
 

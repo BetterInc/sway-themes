@@ -1,0 +1,65 @@
+name: ci
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  install:
+    name: install (${{ matrix.distro }})
+    runs-on: ubuntu-latest
+    container: ${{ matrix.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { distro: debian, image: "debian:12" }
+          - { distro: ubuntu, image: "ubuntu:24.04" }
+          - { distro: arch,   image: "archlinux:latest" }
+          - { distro: fedora, image: "fedora:latest" }
+    steps:
+      - name: bootstrap package manager
+        run: |
+          case "${{ matrix.distro }}" in
+            debian|ubuntu) apt-get update && apt-get install -y git ca-certificates ;;
+            arch)          pacman -Syu --noconfirm git ;;
+            fedora)        dnf install -y git ;;
+          esac
+
+      - uses: actions/checkout@v4
+
+      - name: shell syntax check
+        run: sh -n install.sh && sh -n uninstall.sh && sh -n build-from-source.sh && sh -n bin/sway-theme && sh -n config/waybar/battery.sh && sh -n config/sway/scripts/wallpaper-power.sh
+
+      - name: run installer (includes SwayFX source build)
+        run: ./install.sh
+
+      - name: verify
+        run: |
+          set -ex
+          "$HOME/.local/bin/sway" --version
+          "$HOME/.local/bin/sway" --version | grep -E '^sway version 0\.3'
+          test -x "$HOME/.local/bin/swaylock"
+          test -x "$HOME/.local/bin/mpvpaper"
+          command -v waybar foot rofi swaybg swayidle dunst
+          test -L "$HOME/.config/sway/config"
+          test -L "$HOME/.config/dunst/dunstrc"
+          readlink -f "$HOME/.config/sway-themes/current" | grep -q themes/matrix
+          # validate the sway config end-to-end through the theme symlinks
+          "$HOME/.local/bin/sway" -C -c "$HOME/.config/sway/config" || true
+
+      - name: theme switch (symlink level)
+        run: |
+          set -ex
+          export PATH="$HOME/.local/bin:$PATH"
+          sway-theme | grep -q matrix
+          sway-theme purple
+          readlink -f "$HOME/.config/sway-themes/current" | grep -q themes/purple
+
+      - name: uninstall round-trip
+        run: |
+          set -ex
+          ./uninstall.sh
+          test ! -L "$HOME/.config/sway/config"
+          test ! -L "$HOME/.config/dunst/dunstrc"
