@@ -24,7 +24,11 @@ jobs:
           case "${{ matrix.distro }}" in
             debian|ubuntu) apt-get update && apt-get install -y git ca-certificates ;;
             arch)          pacman -Syu --noconfirm git ;;
-            fedora)        dnf install -y git ;;
+            fedora)
+              # Cisco's openh264 repo is unreachable from GH runners; the
+              # noopenh264 stub satisfies the dependency instead.
+              sed -i 's/enabled=1/enabled=0/' /etc/yum.repos.d/fedora-cisco-openh264.repo || true
+              dnf install -y git noopenh264 || dnf install -y git ;;
           esac
 
       - uses: actions/checkout@v4
@@ -61,13 +65,17 @@ jobs:
         run: |
           set -ex
           case "${{ matrix.distro }}" in
-            debian|ubuntu) apt-get install -y libgl1-mesa-dri libegl1 dbus grim procps fonts-dejavu-core ;;
+            # full software-GL stack: SwayFX requires a GLES2 renderer, so the
+            # mesa EGL/GLES drivers (llvmpipe) must be present, not just glvnd
+            debian|ubuntu) apt-get install -y libgl1-mesa-dri libegl1 libegl-mesa0 libgles2 dbus grim procps fonts-dejavu-core ;;
             arch)          pacman -S --needed --noconfirm mesa dbus grim procps-ng ttf-dejavu ;;
-            fedora)        dnf install -y mesa-dri-drivers mesa-libEGL dbus grim procps-ng dejavu-sans-mono-fonts ;;
+            fedora)        dnf install -y mesa-dri-drivers mesa-libEGL mesa-libGLES dbus grim procps-ng dejavu-sans-mono-fonts ;;
           esac
           export XDG_RUNTIME_DIR=/tmp/xdg; mkdir -p -m 700 "$XDG_RUNTIME_DIR"
           export PATH="$HOME/.local/bin:$PATH"
-          export WLR_BACKENDS=headless WLR_HEADLESS_OUTPUTS=1 WLR_LIBINPUT_NO_DEVICES=1 WLR_RENDERER_ALLOW_SOFTWARE=1
+          # WLR_RENDERER=gles2 forced: without it wlroots falls back to pixman
+          # and SwayFX's fx renderer asserts (it is GLES2-only)
+          export WLR_BACKENDS=headless WLR_HEADLESS_OUTPUTS=1 WLR_LIBINPUT_NO_DEVICES=1 WLR_RENDERER=gles2 WLR_RENDERER_ALLOW_SOFTWARE=1
           sway-theme matrix
           dbus-run-session -- sh -ec '
             sway -d >/tmp/sway.log 2>&1 &
@@ -77,6 +85,9 @@ jobs:
             done
             export SWAYSOCK
             test -S "$SWAYSOCK"
+            # grim and other wayland clients need the compositor display
+            WAYLAND_DISPLAY=$(find "$XDG_RUNTIME_DIR" -maxdepth 1 -name "wayland-*" ! -name "*.lock" -printf "%f\n" | head -1)
+            export WAYLAND_DISPLAY
             swaymsg -t get_version
             swaymsg -t get_outputs | grep -i headless
             # a real client: the themed terminal must map
