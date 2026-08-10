@@ -1,4 +1,4 @@
-Wallpaper: any green "digital rain" loop works. A good free one (4K, 30s):
-  https://pixabay.com/videos/matrix-code-thematrix-glitch-27693/  (Pixabay Content License)
+Wallpaper: any green "digital rain" loop works. A good free one (HD, 20s, dark katakana code):
+  https://pixabay.com/videos/matrix-digits-numbers-letters-49470/  (Pixabay Content License)
 Download it as wallpaper.mp4 into this directory. Without it, the theme
 falls back to wallpaper-still.png at all times.

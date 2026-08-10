@@ -96,7 +96,7 @@ required) and drop them into the theme directory:
 
 | theme | video | save as |
 |---|---|---|
-| matrix | [green digital rain (4K)](https://pixabay.com/videos/matrix-code-thematrix-glitch-27693/) | `themes/matrix/wallpaper.mp4` |
+| matrix | [green digital rain (HD)](https://pixabay.com/videos/matrix-digits-numbers-letters-49470/) | `themes/matrix/wallpaper.mp4` |
 | purple | [dark plexus constellation (4K)](https://pixabay.com/videos/plexus-abstract-background-colorful-57860/) | `themes/purple/wallpaper.mp4` |
 
 Any loop you like works — each theme's `WALLPAPER-SOURCE.txt` has details.
