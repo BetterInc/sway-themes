@@ -9,7 +9,7 @@ jobs:
   # Per-distro: packages resolve, SwayFX + swaylock-effects + mpvpaper build
   # from source, symlinks land, theme switch flips, uninstall restores.
   install:
-    name: install (${{ matrix.distro }})
+    name: install & build (${{ matrix.distro }})
     runs-on: ubuntu-latest
     container: ${{ matrix.image }}
     strategy:
@@ -78,7 +78,7 @@ jobs:
   # the pixman software renderer — the configs are vanilla-compatible by
   # design, and SwayFX is fully built and verified in the matrix above.
   boot:
-    name: boot the rice (headless sway, pixman)
+    name: install & run (headless sway, pixman)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -113,16 +113,17 @@ jobs:
             # a real client: the themed terminal must map
             swaymsg exec foot; sleep 3
             swaymsg -t get_tree | grep -qi foot
+            grim /tmp/ci-screenshot-matrix.png
             # live theme switch inside the running compositor
             sway-theme purple; sleep 3
             readlink -f "$HOME/.config/sway-themes/current" | grep -q themes/purple
             swaymsg -t get_tree | grep -qi foot   # session survived the reload
-            grim /tmp/ci-screenshot.png
+            grim /tmp/ci-screenshot-purple.png
             swaymsg exit || true
           ' || { cat /tmp/sway.log; exit 1; }
 
       - name: upload screenshot of the running rice
         uses: actions/upload-artifact@v4
         with:
-          name: ci-screenshot
-          path: /tmp/ci-screenshot.png
+          name: ci-screenshots
+          path: /tmp/ci-screenshot-*.png
