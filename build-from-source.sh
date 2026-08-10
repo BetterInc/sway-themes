@@ -90,7 +90,10 @@ fi
 if [ -n "$FORCE" ] || ! [ -x "$PREFIX/bin/swaylock" ]; then
     echo "==> Building swaylock-effects"
     rm -rf "$SRC/swaylock-effects"
-    git clone --depth 1 https://github.com/jirutka/swaylock-effects.git "$SRC/swaylock-effects"
+    # pinned: one commit past v1.7.0.0 (background rescale fix)
+    git init -q "$SRC/swaylock-effects"
+    git -C "$SRC/swaylock-effects" fetch -q --depth 1 https://github.com/jirutka/swaylock-effects.git 496059a8565c2d5eed672c2e5bc5e1edd14b3de8
+    git -C "$SRC/swaylock-effects" checkout -q FETCH_HEAD
     meson setup "$SRC/swaylock-effects/build" "$SRC/swaylock-effects" \
         --prefix="$PREFIX" --sysconfdir="$PREFIX/etc" --buildtype=release
     ninja -C "$SRC/swaylock-effects/build" -j"$JOBS" install
@@ -100,7 +103,7 @@ fi
 if [ -n "$FORCE" ] || ! [ -x "$PREFIX/bin/mpvpaper" ]; then
     echo "==> Building mpvpaper"
     rm -rf "$SRC/mpvpaper"
-    git clone --depth 1 https://github.com/GhostNaN/mpvpaper.git "$SRC/mpvpaper"
+    git clone --depth 1 -b 1.9 https://github.com/GhostNaN/mpvpaper.git "$SRC/mpvpaper"
     meson setup "$SRC/mpvpaper/build" "$SRC/mpvpaper" --prefix="$PREFIX" --buildtype=release
     ninja -C "$SRC/mpvpaper/build" -j"$JOBS" install
 fi

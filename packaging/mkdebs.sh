@@ -15,7 +15,7 @@ VERSION="${VERSION#v}"
 # the sway-themes release tag so apt upgrade ordering follows our releases
 SWAYFX_V="0.3.2+bi${VERSION}"
 SWAYLOCK_V="1.7.0+bi${VERSION}"
-MPVPAPER_V="1.7+bi${VERSION}"
+MPVPAPER_V="1.9+bi${VERSION}"
 REPO=$(dirname "$(dirname "$(realpath "$0")")")
 OUT="$REPO/out"
 SRC="$HOME/.local/src"
