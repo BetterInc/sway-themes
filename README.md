@@ -32,10 +32,35 @@ config pulls its colors through it.
     └── purple/             # same files, violet palette
 ```
 
+## Requirements
+
+Debian/Ubuntu-ish system on Wayland. Two kinds of dependencies, and
+`install.sh` handles both (it runs `build-from-source.sh` for anything the
+repos don't have):
+
+**From apt** (runtime):
+
+```sh
+sudo apt install waybar foot rofi swaybg swayidle dunst ffmpeg fonts-font-awesome
+```
+
+**Built from source** into `~/.local` by `./build-from-source.sh` (which
+apt-installs its own build dependencies — meson, ninja, wlroots/wayland dev
+headers — see the `BUILD_DEPS` list inside):
+
+| component | role | note |
+|---|---|---|
+| [SwayFX](https://github.com/WillPower3309/swayfx) 0.3.2 | compositor | **required** — the whole look depends on rounded corners, blur and shadows. Built against a statically-linked wlroots 0.16.2 (Debian 12 ships 0.15, too old). |
+| [swaylock-effects](https://github.com/jirutka/swaylock-effects) | lock screen (blurred screenshot + clock) | required for the themed lock |
+| [mpvpaper](https://github.com/GhostNaN/mpvpaper) | animated wallpaper | optional — themes fall back to the still image |
+
+**Font**: [JetBrainsMono Nerd Font](https://github.com/ryanoasis/nerd-fonts) —
+unzip into `~/.local/share/fonts`, run `fc-cache -f`.
+
 ## Install
 
 ```sh
-git clone <this repo> ~/sway-themes
+git clone https://github.com/BetterInc/sway-themes ~/sway-themes
 ~/sway-themes/install.sh
 ```
 

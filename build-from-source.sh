@@ -1,0 +1,83 @@
+#!/bin/sh
+# Build the from-source components of this rice: SwayFX (with a statically
+# linked wlroots), swaylock-effects, and mpvpaper. Installs into ~/.local.
+#
+#   ./build-from-source.sh              build whatever is missing
+#   ./build-from-source.sh --force      rebuild everything
+#   PREFIX=/some/where ./build-from-source.sh   custom install prefix
+#
+# Debian 12 ships wlroots 0.15, too old for SwayFX 0.3.x — so wlroots 0.16.2
+# is built as a static library first and SwayFX links against it.
+set -e
+
+PREFIX="${PREFIX:-$HOME/.local}"
+SRC="$HOME/.local/src"
+JOBS=$(nproc 2>/dev/null || echo 4)
+FORCE=""; [ "$1" = "--force" ] && FORCE=1
+
+# All build dependencies (runtime deps are handled by install.sh):
+BUILD_DEPS="meson ninja-build cmake pkg-config git wayland-protocols
+libwayland-dev libegl1-mesa-dev libgles2-mesa-dev libdrm-dev libgbm-dev
+libinput-dev libxkbcommon-dev libudev-dev libpixman-1-dev libseat-dev
+libvulkan-dev glslang-tools hwdata xwayland
+libxcb1-dev libxcb-composite0-dev libxcb-dri3-dev libxcb-icccm4-dev
+libxcb-present-dev libxcb-render0-dev libxcb-res0-dev libxcb-xfixes0-dev
+libxcb-xinput-dev libxcb-shm0-dev libxcb-ewmh-dev
+libjson-c-dev libpcre2-dev libpango1.0-dev libcairo2-dev
+libgdk-pixbuf-2.0-dev scdoc libpam0g-dev libmpv-dev"
+
+echo "==> Installing build dependencies (sudo required)"
+# shellcheck disable=SC2086
+sudo apt install -y $BUILD_DEPS
+
+mkdir -p "$SRC"
+export PKG_CONFIG_PATH="$PREFIX/lib/$(gcc -dumpmachine)/pkgconfig:$PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
+
+# --------------------------------------------------------------- wlroots 0.16.2 (static)
+if [ -n "$FORCE" ] || ! pkg-config --atleast-version=0.16 wlroots 2>/dev/null; then
+    echo "==> Building wlroots 0.16.2 (static library)"
+    rm -rf "$SRC/wlroots"
+    git clone --depth 1 -b 0.16.2 https://gitlab.freedesktop.org/wlroots/wlroots.git "$SRC/wlroots"
+    meson setup "$SRC/wlroots/build" "$SRC/wlroots" --prefix="$PREFIX" \
+        --buildtype=release -Ddefault_library=static \
+        -Dexamples=false -Dxwayland=enabled
+    ninja -C "$SRC/wlroots/build" -j"$JOBS" install
+fi
+
+# --------------------------------------------------------------- SwayFX 0.3.2
+# SwayFX reports its own project version (0.3.x); vanilla sway reports 1.x
+if [ -n "$FORCE" ] || ! "$PREFIX/bin/sway" --version 2>/dev/null | grep -q '^sway version 0\.3'; then
+    echo "==> Building SwayFX 0.3.2"
+    rm -rf "$SRC/swayfx"
+    git clone --depth 1 -b 0.3.2 https://github.com/WillPower3309/swayfx.git "$SRC/swayfx"
+    # With wlroots linked statically, swayfx's own matrix_projection collides
+    # with wlroots' internal symbol of the same name — rename swayfx's copy.
+    grep -rl 'matrix_projection' "$SRC/swayfx/sway" "$SRC/swayfx/include" 2>/dev/null \
+        | xargs -r sed -i 's/\bmatrix_projection\b/fx_matrix_projection/g'
+    meson setup "$SRC/swayfx/build" "$SRC/swayfx" --prefix="$PREFIX" \
+        --buildtype=release -Dwerror=false
+    ninja -C "$SRC/swayfx/build" -j"$JOBS" install
+    echo "    installed: $PREFIX/bin/sway ($("$PREFIX/bin/sway" --version 2>/dev/null || true))"
+fi
+
+# --------------------------------------------------------------- swaylock-effects
+if [ -n "$FORCE" ] || ! [ -x "$PREFIX/bin/swaylock" ]; then
+    echo "==> Building swaylock-effects"
+    rm -rf "$SRC/swaylock-effects"
+    git clone --depth 1 https://github.com/jirutka/swaylock-effects.git "$SRC/swaylock-effects"
+    meson setup "$SRC/swaylock-effects/build" "$SRC/swaylock-effects" \
+        --prefix="$PREFIX" --sysconfdir="$PREFIX/etc" --buildtype=release
+    ninja -C "$SRC/swaylock-effects/build" -j"$JOBS" install
+fi
+
+# --------------------------------------------------------------- mpvpaper (optional but nice)
+if [ -n "$FORCE" ] || ! [ -x "$PREFIX/bin/mpvpaper" ]; then
+    echo "==> Building mpvpaper"
+    rm -rf "$SRC/mpvpaper"
+    git clone --depth 1 https://github.com/GhostNaN/mpvpaper.git "$SRC/mpvpaper"
+    meson setup "$SRC/mpvpaper/build" "$SRC/mpvpaper" --prefix="$PREFIX" --buildtype=release
+    ninja -C "$SRC/mpvpaper/build" -j"$JOBS" install
+fi
+
+echo "==> Done. Make sure $PREFIX/bin is on your PATH and start sway by its"
+echo "    full path from your login shell profile (e.g. exec $PREFIX/bin/sway)."

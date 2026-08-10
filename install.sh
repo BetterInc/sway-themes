@@ -24,23 +24,24 @@ echo "==> sway-themes installer (repo: $REPO)"
 # ---------------------------------------------------------------- apt deps
 if command -v apt >/dev/null; then
     echo "==> Installing apt dependencies (sudo required)"
-    sudo apt install -y waybar foot rofi swaybg swayidle ffmpeg \
+    sudo apt install -y waybar foot rofi swaybg swayidle dunst ffmpeg \
         fonts-font-awesome
 else
     echo "!! apt not found — install manually: waybar foot rofi swaybg swayidle"
 fi
 
-# Things this rice needs that are NOT in the Debian repos (build from source):
-#   - swayfx            https://github.com/WillPower3309/swayfx   (compositor; vanilla sway works too, minus blur/shadows/rounding)
-#   - swaylock-effects  https://github.com/jirutka/swaylock-effects
-#         meson setup build --buildtype=release --prefix=$HOME/.local --sysconfdir=$HOME/.local/etc
-#         ninja -C build install
-#   - mpvpaper          https://github.com/GhostNaN/mpvpaper      (animated wallpaper; theme falls back to swaybg still without it)
-#   - JetBrainsMono Nerd Font  https://github.com/ryanoasis/nerd-fonts (unzip into ~/.local/share/fonts, run fc-cache -f)
-for bin in sway swaylock mpvpaper; do
-    command -v "$bin" >/dev/null || echo "!! '$bin' not found — see build notes in install.sh"
-done
-fc-list 2>/dev/null | grep -qi 'JetBrainsMono Nerd' || echo "!! JetBrainsMono Nerd Font not installed — see notes in install.sh"
+# Components NOT in the Debian repos — SwayFX (required: the whole look
+# depends on rounded corners/blur/shadows), swaylock-effects and mpvpaper.
+# build-from-source.sh builds whatever is missing into ~/.local.
+need_build=""
+sway --version 2>/dev/null | grep -q '^sway version 0\.3' || need_build="swayfx"
+command -v swaylock >/dev/null || need_build="$need_build swaylock-effects"
+command -v mpvpaper >/dev/null || need_build="$need_build mpvpaper"
+if [ -n "$need_build" ]; then
+    echo "==> Building missing components from source:$need_build"
+    "$REPO/build-from-source.sh"
+fi
+fc-list 2>/dev/null | grep -qi 'JetBrainsMono Nerd' || echo "!! JetBrainsMono Nerd Font not installed — https://github.com/ryanoasis/nerd-fonts, unzip into ~/.local/share/fonts, run fc-cache -f"
 
 # ------------------------------------------------------------- symlink helper
 link() { # link <target> <linkpath>
