@@ -18,7 +18,7 @@ FORCE=""; [ "$1" = "--force" ] && FORCE=1
 SUDO=""; [ "$(id -u)" != 0 ] && SUDO=sudo
 
 # Build dependencies per package manager (runtime deps: install.sh).
-APT_DEPS="gcc meson ninja-build cmake pkg-config git wayland-protocols
+APT_DEPS="gcc libevdev-dev meson ninja-build cmake pkg-config git wayland-protocols
 libwayland-dev libegl1-mesa-dev libgles2-mesa-dev libdrm-dev libgbm-dev
 libinput-dev libxkbcommon-dev libudev-dev libpixman-1-dev libseat-dev
 libvulkan-dev glslang-tools hwdata xwayland
@@ -28,13 +28,13 @@ libxcb-xinput-dev libxcb-shm0-dev libxcb-ewmh-dev
 libjson-c-dev libpcre2-dev libpango1.0-dev libcairo2-dev
 libgdk-pixbuf-2.0-dev scdoc libpam0g-dev libmpv-dev"
 
-PACMAN_DEPS="gcc meson ninja cmake pkgconf git wayland wayland-protocols mesa
+PACMAN_DEPS="gcc libevdev meson ninja cmake pkgconf git wayland wayland-protocols mesa
 libdrm libinput libxkbcommon pixman seatd vulkan-headers vulkan-icd-loader
 glslang hwdata xorg-xwayland libxcb xcb-util-wm xcb-util-image
 xcb-util-renderutil xcb-util-errors json-c pcre2 pango cairo gdk-pixbuf2
 scdoc pam mpv"
 
-DNF_DEPS="gcc meson ninja-build cmake pkgconf-pkg-config git wayland-devel
+DNF_DEPS="gcc libevdev-devel meson ninja-build cmake pkgconf-pkg-config git wayland-devel
 wayland-protocols-devel mesa-libEGL-devel mesa-libgbm-devel libdrm-devel
 libinput-devel libxkbcommon-devel systemd-devel pixman-devel libseat-devel
 vulkan-loader-devel glslang hwdata libxcb-devel xcb-util-wm-devel

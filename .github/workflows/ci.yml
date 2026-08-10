@@ -57,6 +57,45 @@ jobs:
           sway-theme purple
           readlink -f "$HOME/.config/sway-themes/current" | grep -q themes/purple
 
+      - name: use it — boot SwayFX headless, spawn foot, live-switch theme, screenshot
+        run: |
+          set -ex
+          case "${{ matrix.distro }}" in
+            debian|ubuntu) apt-get install -y libgl1-mesa-dri libegl1 dbus grim procps fonts-dejavu-core ;;
+            arch)          pacman -S --needed --noconfirm mesa dbus grim procps-ng ttf-dejavu ;;
+            fedora)        dnf install -y mesa-dri-drivers mesa-libEGL dbus grim procps-ng dejavu-sans-mono-fonts ;;
+          esac
+          export XDG_RUNTIME_DIR=/tmp/xdg; mkdir -p -m 700 "$XDG_RUNTIME_DIR"
+          export PATH="$HOME/.local/bin:$PATH"
+          export WLR_BACKENDS=headless WLR_HEADLESS_OUTPUTS=1 WLR_LIBINPUT_NO_DEVICES=1 WLR_RENDERER_ALLOW_SOFTWARE=1
+          sway-theme matrix
+          dbus-run-session -- sh -ec '
+            sway -d >/tmp/sway.log 2>&1 &
+            for i in $(seq 1 30); do
+              SWAYSOCK=$(find "$XDG_RUNTIME_DIR" -maxdepth 1 -name "sway-ipc.*.sock" 2>/dev/null | head -1)
+              [ -n "$SWAYSOCK" ] && [ -S "$SWAYSOCK" ] && break; sleep 1
+            done
+            export SWAYSOCK
+            test -S "$SWAYSOCK"
+            swaymsg -t get_version
+            swaymsg -t get_outputs | grep -i headless
+            # a real client: the themed terminal must map
+            swaymsg exec foot; sleep 3
+            swaymsg -t get_tree | grep -qi foot
+            # live theme switch inside the running compositor
+            sway-theme purple; sleep 3
+            readlink -f "$HOME/.config/sway-themes/current" | grep -q themes/purple
+            swaymsg -t get_tree | grep -qi foot   # session survived the reload
+            grim /tmp/ci-screenshot-${{ matrix.distro }}.png
+            swaymsg exit || true
+          ' || { cat /tmp/sway.log; exit 1; }
+
+      - name: upload screenshot of the running rice
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-screenshot-${{ matrix.distro }}
+          path: /tmp/ci-screenshot-${{ matrix.distro }}.png
+
       - name: uninstall round-trip
         run: |
           set -ex
