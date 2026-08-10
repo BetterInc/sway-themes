@@ -61,6 +61,8 @@ link "$REPO/config/rofi/config.rasi"      "$CONF/rofi/config.rasi"
 link "../sway-themes/current/rofi.rasi"         "$CONF/rofi/theme.rasi"
 # swaylock
 link "../sway-themes/current/swaylock.config"   "$CONF/swaylock/config"
+# dunst (notifications — whole config is per-theme, dunst <1.10 has no includes)
+link "../sway-themes/current/dunstrc"           "$CONF/dunst/dunstrc"
 # theme switcher on PATH
 link "$REPO/bin/sway-theme"               "$HOME/.local/bin/sway-theme"
 

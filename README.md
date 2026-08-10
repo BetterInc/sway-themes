@@ -2,6 +2,10 @@
 
 My SwayFX rice with switchable themes (Matrix green, neon purple, ...).
 
+| matrix | purple |
+|---|---|
+| ![matrix](docs/matrix.png) | ![purple](docs/purple.png) |
+
 Structure and colors are separated: `config/` holds the theme-agnostic configs
 for sway, waybar, foot, rofi and the wallpaper scripts; each directory under
 `themes/` is a self-contained color + wallpaper pack. A single symlink
@@ -77,7 +81,8 @@ sway-theme mytheme
 
 A theme is just a directory with these files (all optional except the colors
 you actually use): `sway-colors.conf`, `waybar-colors.css`, `foot-colors.ini`,
-`rofi.rasi`, `swaylock.config`, `wallpaper.mp4`, `wallpaper-still.png`.
+`rofi.rasi`, `swaylock.config`, `dunstrc` (notifications), `wallpaper.mp4`,
+`wallpaper-still.png`.
 Themes you want to share can be PR'd into `themes/` here.
 
 A theme without `wallpaper.mp4` falls back to the still image at all times.

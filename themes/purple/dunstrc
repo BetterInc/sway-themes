@@ -1,0 +1,71 @@
+[global]
+    monitor = 0
+    follow = none
+    width = 360
+    height = (0, 200)
+    origin = top-right
+    offset = (12, 12)
+    scale = 0
+    notification_limit = 5
+
+    progress_bar = true
+    indicate_hidden = yes
+    transparency = 10
+    separator_height = 2
+    padding = 10
+    horizontal_padding = 12
+    frame_width = 2
+    gap_size = 6
+    corner_radius = 12
+    highlight = "#b44dff"
+    separator_color = "#2a0a4a"
+    sort = yes
+
+    font = JetBrainsMono Nerd Font 10
+    line_height = 0
+    markup = full
+    format = "<b>%a</b>\n<b>%s</b>\n%b"
+    alignment = left
+    vertical_alignment = center
+    word_wrap = yes
+    ellipsize = middle
+    show_age_threshold = 60
+    ignore_newline = no
+    stack_duplicates = true
+    show_indicators = yes
+
+    icon_position = left
+    min_icon_size = 16
+    max_icon_size = 48
+    enable_recursive_icon_lookup = true
+
+    dmenu = /usr/bin/dmenu -p dunst:
+    browser = /usr/bin/xdg-open
+
+    mouse_left_click = close_current
+    mouse_middle_click = do_action, close_current
+    mouse_right_click = close_all
+
+[urgency_low]
+    background = "#0a0410"
+    foreground = "#6b21a8"
+    frame_color = "#2a0a4a"
+    timeout = 6
+
+[urgency_normal]
+    background = "#0a0410"
+    foreground = "#b44dff"
+    frame_color = "#b44dff"
+    timeout = 8
+
+[urgency_critical]
+    background = "#0a0410"
+    foreground = "#ff6ac1"
+    frame_color = "#ff6ac1"
+    timeout = 0
+
+# Discord: show who messaged, but never the message text on screen.
+# %a = appname, %s = summary (sender/channel); %b (body/message) is dropped.
+[discord_hide_body]
+    appname = "discord"
+    format = "<b>Discord</b>\n%s"

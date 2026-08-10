@@ -245,7 +245,8 @@ bar {
 
 include /etc/sway/config.d/*
 
-exec_always sway-displays watch
+# Personal display-layout manager; skipped if not installed
+exec_always sh -c 'command -v sway-displays >/dev/null && sway-displays watch'
 
 exec gnome-keyring-daemon --start --components=secrets
 

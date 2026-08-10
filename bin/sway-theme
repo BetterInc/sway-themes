@@ -71,6 +71,10 @@ pkill -x mpvpaper 2>/dev/null || true
 pkill -x swaybg 2>/dev/null || true
 "$HOME/.config/sway/scripts/wallpaper-power.sh" || true
 
+# Notifications: dunst reads its config at startup; kill it and it respawns
+# themed via D-Bus activation on the next notification.
+pkill -x dunst 2>/dev/null || true
+
 # Reload sway (re-reads included colors and respawns waybar)
 if [ -n "$SWAYSOCK" ] || pgrep -x sway >/dev/null; then
     swaymsg reload >/dev/null 2>&1 || true
