@@ -45,6 +45,12 @@ activates the matrix theme. Custom-built components (swayfx, swaylock-effects,
 mpvpaper, JetBrainsMono Nerd Font) are checked and reported with build notes —
 see the comments in `install.sh`.
 
+**What it does and doesn't touch**: only symlinks under `~/.config` (sway,
+waybar, foot, rofi, swaylock, dunst) and `~/.local/bin/sway-theme` — never
+system files or binaries. Your existing configs (including your sway
+keybindings) are replaced by this rice, but every original is kept as `*.bak`.
+`./uninstall.sh` removes the symlinks and restores the backups.
+
 ## Switch themes
 
 ```sh
