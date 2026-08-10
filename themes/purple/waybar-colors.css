@@ -1,0 +1,14 @@
+/* Purple palette — same roles as matrix, violet family */
+@define-color base      #0a0410;
+@define-color mantle    #06020c;
+@define-color crust     #000000;
+@define-color surface0  #1c1030;
+@define-color surface1  #331d57;
+@define-color text      #b44dff;
+@define-color subtext0  #6b21a8;
+@define-color green     #b44dff;
+@define-color palegreen #e3c8ff;
+@define-color midgreen  #9333ea;
+@define-color aqua      #61d6ff;
+@define-color lime      #ff6ac1;
+@define-color darkgreen #2a0a4a;

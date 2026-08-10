@@ -1,0 +1,45 @@
+#!/bin/sh
+# sway-theme — list or switch sway-themes.
+#
+#   sway-theme            list available themes (* = active)
+#   sway-theme <name>     switch to theme <name> and reload the desktop
+set -e
+
+REPO=$(dirname "$(dirname "$(realpath "$0")")")
+THEMES_DIR="$REPO/themes"
+CURRENT_LINK="$HOME/.config/sway-themes/current"
+
+active=$(basename "$(readlink "$CURRENT_LINK" 2>/dev/null)" 2>/dev/null || true)
+
+if [ -z "$1" ]; then
+    echo "Available themes:"
+    for t in "$THEMES_DIR"/*/; do
+        name=$(basename "$t")
+        [ "$name" = "$active" ] && echo "  * $name" || echo "    $name"
+    done
+    exit 0
+fi
+
+theme="$1"
+if [ ! -d "$THEMES_DIR/$theme" ]; then
+    echo "error: no such theme '$theme' (looked in $THEMES_DIR)" >&2
+    exit 1
+fi
+
+mkdir -p "$HOME/.config/sway-themes"
+ln -sfn "$THEMES_DIR/$theme" "$CURRENT_LINK"
+
+# Re-apply wallpaper: kill whatever is drawing it and clear the power-state
+# cache so wallpaper-power.sh starts fresh with the new theme's files.
+rm -f "${XDG_RUNTIME_DIR:-/tmp}/wallpaper-power.state"
+pkill -x mpvpaper 2>/dev/null || true
+pkill -x swaybg 2>/dev/null || true
+"$HOME/.config/sway/scripts/wallpaper-power.sh" || true
+
+# Reload sway (re-reads included colors and respawns waybar)
+if [ -n "$SWAYSOCK" ] || pgrep -x sway >/dev/null; then
+    swaymsg reload >/dev/null 2>&1 || true
+fi
+
+echo "Switched to '$theme'."
+echo "note: already-open foot terminals keep their old colors; new ones use the theme."

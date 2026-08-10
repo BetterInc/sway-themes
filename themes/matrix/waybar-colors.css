@@ -1,0 +1,14 @@
+/* Matrix palette */
+@define-color base      #0d0208;
+@define-color mantle    #080205;
+@define-color crust     #000000;
+@define-color surface0  #0f1f0f;
+@define-color surface1  #1e3b1e;
+@define-color text      #00ff41;
+@define-color subtext0  #008f11;
+@define-color green     #00ff41;
+@define-color palegreen #baffc4;
+@define-color midgreen  #00d95f;
+@define-color aqua      #35ffa9;
+@define-color lime      #aaff66;
+@define-color darkgreen #003b00;
