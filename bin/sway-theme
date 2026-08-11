@@ -64,20 +64,24 @@ push_terminal_colors() {
 }
 push_terminal_colors
 
-# Re-apply wallpaper: kill whatever is drawing it and clear the power-state
-# cache so wallpaper-power.sh starts fresh with the new theme's files.
-rm -f "${XDG_RUNTIME_DIR:-/tmp}/wallpaper-power.state"
-pkill -x mpvpaper 2>/dev/null || true
-pkill -x swaybg 2>/dev/null || true
-"$HOME/.config/sway/scripts/wallpaper-power.sh" || true
-
 # Notifications: dunst reads its config at startup; kill it and it respawns
 # themed via D-Bus activation on the next notification.
 pkill -x dunst 2>/dev/null || true
 
-# Reload sway (re-reads included colors and respawns waybar)
+# Reload sway FIRST (re-reads included colors, respawns waybar, re-runs
+# exec_always hooks like display watchers) - the reload can kill wallpaper
+# processes, so the wallpaper is applied after it settles, not before.
 if [ -n "$SWAYSOCK" ] || pgrep -x sway >/dev/null; then
     swaymsg reload >/dev/null 2>&1 || true
+    sleep 1
 fi
+
+# Re-apply wallpaper: kill whatever is drawing it (including argument-less
+# strays that render nothing) and clear the power-state cache so
+# wallpaper-power.sh starts fresh with the new theme's files.
+rm -f "${XDG_RUNTIME_DIR:-/tmp}/wallpaper-power.state"
+pkill -x mpvpaper 2>/dev/null || true
+pkill -x swaybg 2>/dev/null || true
+"$HOME/.config/sway/scripts/wallpaper-power.sh" || true
 
 echo "Switched to '$theme' ($theme_dir)."

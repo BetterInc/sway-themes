@@ -113,6 +113,24 @@ if [ ! -e "$CONF/sway-themes/current" ]; then
     echo "==> Activated default theme: $DEFAULT_THEME"
 fi
 
+# -------------------------------------------------------- starter user theme
+# An editable copy of the shipped example theme (own teal palette, all
+# files) in ~/.config, so people can start theming without touching the
+# (possibly root-owned) shipped themes. Its animated wallpaper is generated
+# with ffmpeg - no downloads, no licensing strings attached.
+EXAMPLE="$CONF/sway-themes/themes/example"
+if [ ! -d "$EXAMPLE" ] && [ -d "$REPO/themes/example" ]; then
+    echo "==> Creating editable starter theme: example"
+    mkdir -p "$EXAMPLE"
+    cp -r "$REPO/themes/example/." "$EXAMPLE/"
+    if command -v ffmpeg >/dev/null && [ ! -f "$EXAMPLE/wallpaper.mp4" ]; then
+        ffmpeg -y -loglevel error -f lavfi \
+            -i "gradients=s=1920x1080:d=12:c0=0x02100e:c1=0x00332c:c2=0x00806e:c3=0x00bfa5:speed=0.015" \
+            -pix_fmt yuv420p "$EXAMPLE/wallpaper.mp4" 2>/dev/null || true
+    fi
+    echo "    edit $EXAMPLE/* then run: sway-theme example"
+fi
+
 chmod +x "$REPO"/bin/* "$REPO"/config/sway/scripts/*.sh "$REPO"/config/waybar/battery.sh 2>/dev/null || true
 
 echo "==> Done. Switch themes with:  sway-theme <name>   (list: sway-theme)"

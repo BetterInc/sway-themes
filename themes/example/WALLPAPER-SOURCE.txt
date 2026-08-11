@@ -1,0 +1,3 @@
+Wallpaper: generated at setup time by install.sh with ffmpeg (animated
+teal gradient, lavfi gradients filter) - nothing downloaded, no license
+strings attached. Regenerate or replace freely.

@@ -54,12 +54,16 @@ Only upgrading the swayfx binary itself ever needs a re-login.
 
 ## Make your own theme
 
-Themes in `~/.config/sway-themes/themes/` work without touching this repo
-(and win on name conflicts):
+Setup already created a starter for you:
+`~/.config/sway-themes/themes/example` - a full editable copy of the matrix
+colors with a generated animated-gradient wallpaper. Edit its files and run
+`sway-theme example`.
+
+More themes live in the same place and work without touching this repo
+(user themes win on name conflicts):
 
 ```sh
-mkdir -p ~/.config/sway-themes/themes
-cp -r ~/sway-themes/themes/matrix ~/.config/sway-themes/themes/mytheme
+cp -r ~/.config/sway-themes/themes/example ~/.config/sway-themes/themes/mytheme
 $EDITOR ~/.config/sway-themes/themes/mytheme/*
 sway-theme mytheme
 ```

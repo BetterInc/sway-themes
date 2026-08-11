@@ -1,0 +1,14 @@
+/* Example palette (teal starter) - same roles as matrix/purple, edit me! */
+@define-color base      #02100e;
+@define-color mantle    #010a09;
+@define-color crust     #000000;
+@define-color surface0  #0a2620;
+@define-color surface1  #14443b;
+@define-color text      #00e5c7;
+@define-color subtext0  #00806e;
+@define-color green     #00e5c7;
+@define-color palegreen #b3fff4;
+@define-color midgreen  #00bfa5;
+@define-color aqua      #66d9ff;
+@define-color lime      #ffd166;
+@define-color darkgreen #00332c;
