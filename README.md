@@ -77,8 +77,15 @@ from Pixabay into the theme directory:
 
 | theme | video (Pixabay Content License) | save as |
 |---|---|---|
-| matrix | [green digital rain](https://pixabay.com/videos/matrix-digits-numbers-letters-49470/) | `themes/matrix/wallpaper.mp4` |
-| purple | [dark plexus constellation](https://pixabay.com/videos/plexus-abstract-background-colorful-57860/) | `themes/purple/wallpaper.mp4` |
+| matrix | [green digital rain](https://pixabay.com/videos/matrix-digits-numbers-letters-49470/) | `~/.config/sway-themes/wallpapers/matrix.mp4` |
+| purple | [dark plexus constellation](https://pixabay.com/videos/plexus-abstract-background-colorful-57860/) | `~/.config/sway-themes/wallpapers/purple.mp4` |
+
+Save location - either works, the user directory wins if both exist:
+
+- `~/.config/sway-themes/wallpapers/<theme>.mp4` - per user, no root needed
+- `<theme dir>/wallpaper.mp4` - system-wide; for apt installs that is
+  `/usr/share/sway-themes/themes/<theme>/wallpaper.mp4` (needs sudo, and
+  dpkg leaves manually added files alone on upgrades)
 
 No video? The theme just uses its committed still full-time. Any loop you
 like works - tip: `ffmpeg -i in.mp4 -vf hue=h=200 -an out.mp4` recolors one.
