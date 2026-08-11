@@ -7,8 +7,15 @@
 # clears the state file to force a re-apply after switching themes.
 STATE_FILE="${XDG_RUNTIME_DIR:-/tmp}/wallpaper-power.state"
 THEME_DIR="$HOME/.config/sway-themes/current"
-video="$THEME_DIR/wallpaper.mp4"
-still="$THEME_DIR/wallpaper-still.png"
+THEME_NAME=$(basename "$(readlink "$THEME_DIR" 2>/dev/null)" 2>/dev/null)
+
+# User wallpapers override the theme's own (no root needed, survives apt
+# upgrades): drop <theme>.mp4 / <theme>.png into ~/.config/sway-themes/wallpapers/
+USER_WP="$HOME/.config/sway-themes/wallpapers"
+video="$USER_WP/$THEME_NAME.mp4"
+[ -f "$video" ] || video="$THEME_DIR/wallpaper.mp4"
+still="$USER_WP/$THEME_NAME.png"
+[ -f "$still" ] || still="$THEME_DIR/wallpaper-still.png"
 
 # mpvpaper may live in ~/.local/bin (source build) or /usr/bin (deb)
 MPVPAPER=$(command -v mpvpaper || echo "$HOME/.local/bin/mpvpaper")
