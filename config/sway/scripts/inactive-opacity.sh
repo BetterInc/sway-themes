@@ -1,6 +1,6 @@
 #!/bin/sh
 # Fade unfocused windows so the wallpaper shows through; focused stays solid.
-# Sleeps on sway's IPC socket — only wakes on window events.
+# Sleeps on sway's IPC socket - only wakes on window events.
 INACTIVE=0.85
 
 # Only one instance (sway reload re-runs exec_always)

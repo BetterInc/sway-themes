@@ -1,4 +1,4 @@
-// Waybar config — Catppuccin Mocha theme
+// Waybar config - Catppuccin Mocha theme
 {
     "layer": "top",
     "position": "top",
@@ -41,9 +41,9 @@
         "format-ethernet": " wired",
         "format-disconnected": " offline",
         "on-click": "foot -a nmtui -e nmtui",
-        "tooltip-format-wifi": "{essid} ({signalStrength}%) — {ipaddr}\nClick to manage wifi",
-        "tooltip-format-ethernet": "{ifname} — {ipaddr}",
-        "tooltip-format-disconnected": "Disconnected — click to connect"
+        "tooltip-format-wifi": "{essid} ({signalStrength}%) - {ipaddr}\nClick to manage wifi",
+        "tooltip-format-ethernet": "{ifname} - {ipaddr}",
+        "tooltip-format-disconnected": "Disconnected - click to connect"
     },
 
     "cpu": {

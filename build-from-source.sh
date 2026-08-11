@@ -6,7 +6,7 @@
 #   ./build-from-source.sh --force      rebuild everything
 #   PREFIX=/some/where ./build-from-source.sh   custom install prefix
 #
-# Debian 12 ships wlroots 0.15, too old for SwayFX 0.3.x — so wlroots 0.16.2
+# Debian 12 ships wlroots 0.15, too old for SwayFX 0.3.x - so wlroots 0.16.2
 # is built as a static library first and SwayFX links against it.
 set -e
 
@@ -51,7 +51,7 @@ elif command -v pacman >/dev/null; then
 elif command -v dnf >/dev/null; then
     $SUDO dnf install -y $DNF_DEPS
 else
-    echo "!! unknown package manager — make sure meson/ninja and the wayland,"
+    echo "!! unknown package manager - make sure meson/ninja and the wayland,"
     echo "   wlroots, pam and mpv dev headers are installed, then re-run."
 fi
 
@@ -77,7 +77,7 @@ if [ -n "$FORCE" ] || ! "$PREFIX/bin/sway" --version 2>/dev/null | grep -q '^swa
     rm -rf "$SRC/swayfx"
     git clone --depth 1 -b 0.3.2 https://github.com/WillPower3309/swayfx.git "$SRC/swayfx"
     # With wlroots linked statically, swayfx's own matrix_projection collides
-    # with wlroots' internal symbol of the same name — rename swayfx's copy.
+    # with wlroots' internal symbol of the same name - rename swayfx's copy.
     grep -rl 'matrix_projection' "$SRC/swayfx/sway" "$SRC/swayfx/include" 2>/dev/null \
         | xargs -r sed -i 's/\bmatrix_projection\b/fx_matrix_projection/g'
     meson setup "$SRC/swayfx/build" "$SRC/swayfx" --prefix="$PREFIX" \

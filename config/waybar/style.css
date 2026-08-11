@@ -1,4 +1,4 @@
-/* Theme palette — symlinked to the active theme by sway-theme */
+/* Theme palette - symlinked to the active theme by sway-theme */
 @import "colors.css";
 
 * {
@@ -17,7 +17,7 @@ window#waybar {
     border-radius: 14px;
 }
 
-/* Workspaces — rounded pills */
+/* Workspaces - rounded pills */
 #workspaces {
     background: @surface0;
     margin: 5px 0 5px 10px;
@@ -63,7 +63,7 @@ window#waybar {
     font-weight: 400;
 }
 
-/* Right-side modules — rounded pills, shades of green */
+/* Right-side modules - rounded pills, shades of green */
 #pulseaudio,
 #network,
 #cpu,

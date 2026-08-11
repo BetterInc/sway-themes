@@ -1,5 +1,5 @@
 #!/bin/sh
-# sway-themes uninstaller — removes the symlinks install.sh created and
+# sway-themes uninstaller - removes the symlinks install.sh created and
 # restores any *.bak backups it made. Leaves the repo itself untouched.
 set -e
 
@@ -33,7 +33,7 @@ unlink_restore "$CONF/swaylock/config"
 unlink_restore "$CONF/dunst/dunstrc"
 unlink_restore "$HOME/.local/bin/sway-theme"
 
-# active-theme pointer (keep ~/.config/sway-themes/themes — user's own themes)
+# active-theme pointer (keep ~/.config/sway-themes/themes - user's own themes)
 [ -L "$CONF/sway-themes/current" ] && rm "$CONF/sway-themes/current" && echo "   removed $CONF/sway-themes/current"
 
 echo "==> Done. Reload sway (swaymsg reload) to go back to your old config."

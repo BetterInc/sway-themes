@@ -30,7 +30,7 @@ PREFIX=/usr "$REPO/build-from-source.sh" --force
 # dpkg-shlibdeps for computed runtime dependencies
 apt-get install -y dpkg-dev
 
-# stage_from_build <builddir> <stagedir> — copy everything that build installed
+# stage_from_build <builddir> <stagedir> - copy everything that build installed
 stage_from_build() {
     python3 - "$1" "$2" <<'EOF'
 import json, os, shutil, subprocess, sys
@@ -61,7 +61,7 @@ mkdeb() {
     dpkg-deb --build --root-owner-group "$stage" "$OUT/${name}_${ver}_${arch}.deb"
 }
 
-# shlib_deps <stagedir> <binary...> — compute Depends via dpkg-shlibdeps
+# shlib_deps <stagedir> <binary...> - compute Depends via dpkg-shlibdeps
 shlib_deps() {
     stage=$1; shift
     ( cd "$stage" && mkdir -p debian && touch debian/control \
@@ -72,9 +72,12 @@ shlib_deps() {
 echo "==> Packaging swayfx (ships /usr/bin/sway, wlroots statically linked)"
 S=/tmp/stage-swayfx; rm -rf $S
 stage_from_build "$SRC/swayfx/build" $S
+# Debian ships the stock wallpapers as a separate sway-backgrounds package;
+# shipping them here conflicts with it and nothing in the rice uses them.
+rm -rf $S/usr/share/backgrounds
 deps=$(shlib_deps $S usr/bin/sway usr/bin/swaymsg usr/bin/swaybar usr/bin/swaynag)
 mkdeb swayfx "$SWAYFX_V" amd64 $S "$deps" \
-    "Conflicts: sway" "Provides: sway" "Replaces: sway" \
+    "Conflicts: sway" "Provides: sway" "Replaces: sway, sway-backgrounds" \
     "Section: x11" "Priority: optional" \
     "Homepage: https://github.com/WillPower3309/swayfx" \
     "Description: SwayFX compositor - sway with blur, rounded corners and shadows

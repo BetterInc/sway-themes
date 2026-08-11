@@ -10,7 +10,7 @@ video="$THEME_DIR/wallpaper.mp4"
 still="$THEME_DIR/wallpaper-still.png"
 
 acdev=""; for d in /sys/class/power_supply/AC /sys/class/power_supply/ADP* /sys/class/power_supply/ACAD*; do [ -e "$d" ] && acdev=$d && break; done
-ac=$(cat "$acdev/online" 2>/dev/null || echo 1)   # no adapter device → assume AC (desktop)
+ac=$(cat "$acdev/online" 2>/dev/null || echo 1)   # no adapter device -> assume AC (desktop)
 prev=$(cat "$STATE_FILE" 2>/dev/null)
 [ "$ac" = "$prev" ] && exit 0
 echo "$ac" > "$STATE_FILE"

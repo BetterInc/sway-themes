@@ -1,5 +1,5 @@
 #!/bin/sh
-# sway-themes installer — Debian/Ubuntu.
+# sway-themes installer - Debian/Ubuntu.
 # Installs apt dependencies, backs up existing configs, symlinks everything
 # from this repo into ~/.config, and activates the default theme (matrix).
 set -e
@@ -8,9 +8,9 @@ set -e
 # sway reloads, backups are never deleted, and this script is idempotent.
 trap 's=$?; [ $s -ne 0 ] && {
     echo ""
-    echo "!! install failed (exit $s) — your running desktop is NOT affected"
+    echo "!! install failed (exit $s) - your running desktop is NOT affected"
     echo "   (changes only apply on the next sway reload/login)."
-    echo "   Fix the issue and re-run ./install.sh — it is safe to re-run and"
+    echo "   Fix the issue and re-run ./install.sh - it is safe to re-run and"
     echo "   will simply complete the remaining steps (backups are kept)."
     echo "   Or roll everything back with ./uninstall.sh."
 }' EXIT
@@ -26,7 +26,7 @@ echo "==> sway-themes installer (repo: $REPO)"
 # dependencies are installed via whichever package manager exists; anything
 # your distro doesn't package is built from source by build-from-source.sh.
 # Installed via a distro package (e.g. /usr/share/sway-themes)? Then all
-# dependencies and binaries are the package manager's job — this script only
+# dependencies and binaries are the package manager's job - this script only
 # needs to do the per-user symlinking below.
 case "$REPO" in /usr/*) SWAY_THEMES_NO_DEPS=1; SWAY_THEMES_NO_BUILD=1 ;; esac
 
@@ -45,7 +45,7 @@ elif command -v dnf >/dev/null; then
     $SUDO dnf install -y waybar foot rofi-wayland swaybg swayidle dunst ffmpeg \
         fontawesome-fonts
 else
-    echo "!! unknown package manager — install these yourself, then re-run:"
+    echo "!! unknown package manager - install these yourself, then re-run:"
     echo "   waybar foot rofi(-wayland) swaybg swayidle dunst ffmpeg font-awesome"
 fi
 
@@ -68,7 +68,7 @@ if [ -n "$need_build" ]; then
         "$REPO/build-from-source.sh"
     fi
 fi
-fc-list 2>/dev/null | grep -qi 'JetBrainsMono Nerd' || echo "!! JetBrainsMono Nerd Font not installed — https://github.com/ryanoasis/nerd-fonts, unzip into ~/.local/share/fonts, run fc-cache -f"
+fc-list 2>/dev/null | grep -qi 'JetBrainsMono Nerd' || echo "!! JetBrainsMono Nerd Font not installed - https://github.com/ryanoasis/nerd-fonts, unzip into ~/.local/share/fonts, run fc-cache -f"
 
 # ------------------------------------------------------------- symlink helper
 link() { # link <target> <linkpath>
@@ -100,7 +100,7 @@ link "$REPO/config/rofi/config.rasi"      "$CONF/rofi/config.rasi"
 link "../sway-themes/current/rofi.rasi"         "$CONF/rofi/theme.rasi"
 # swaylock
 link "../sway-themes/current/swaylock.config"   "$CONF/swaylock/config"
-# dunst (notifications — whole config is per-theme, dunst <1.10 has no includes)
+# dunst (notifications - whole config is per-theme, dunst <1.10 has no includes)
 link "../sway-themes/current/dunstrc"           "$CONF/dunst/dunstrc"
 # theme switcher on PATH
 link "$REPO/bin/sway-theme"               "$HOME/.local/bin/sway-theme"
@@ -115,6 +115,6 @@ fi
 chmod +x "$REPO"/bin/* "$REPO"/config/sway/scripts/*.sh "$REPO"/config/waybar/battery.sh 2>/dev/null || true
 
 echo "==> Done. Switch themes with:  sway-theme <name>   (list: sway-theme)"
-echo "    Apply now with:  swaymsg reload   (or Mod+Shift+c) — reloads sway,"
+echo "    Apply now with:  swaymsg reload   (or Mod+Shift+c) - reloads sway,"
 echo "    waybar, wallpaper, rofi and swaylock in place. Only replacing the"
 echo "    compositor binary itself (installing/upgrading swayfx) needs a re-login."

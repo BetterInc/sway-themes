@@ -75,7 +75,7 @@ jobs:
   # clipboard): non-root user, working dbus, no container security policies.
   # SwayFX itself can't render on GH runners (its GLES2-only wlroots 0.16
   # renderer needs a /dev/dri node), so the boot uses the reference sway with
-  # the pixman software renderer — the configs are vanilla-compatible by
+  # the pixman software renderer - the configs are vanilla-compatible by
   # design, and SwayFX is fully built and verified in the matrix above.
   boot:
     name: install & run (headless sway, pixman)

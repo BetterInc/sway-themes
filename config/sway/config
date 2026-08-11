@@ -28,7 +28,7 @@ include /etc/sway/config-vars.d/*
 # See ~/.config/sway/scripts/wallpaper-power.sh (also re-checked every 5s via waybar battery.sh)
 exec ~/.config/sway/scripts/wallpaper-power.sh
 
-### Appearance — colors come from the active theme (see ~/.config/sway-themes/current)
+### Appearance - colors come from the active theme (see ~/.config/sway-themes/current)
 #
 font pango:JetBrainsMono Nerd Font 10
 
@@ -55,7 +55,7 @@ blur_radius 4
 shadows enable
 shadow_blur_radius 18
 default_dim_inactive 0.08
-# Unfocused windows become translucent (focused stays solid) — tiny IPC watcher
+# Unfocused windows become translucent (focused stays solid) - tiny IPC watcher
 exec_always ~/.config/sway/scripts/inactive-opacity.sh
 #
 # Example configuration:
@@ -93,7 +93,7 @@ exec_always sh -c "pkill -x swayidle; swayidle -w timeout 1800 '~/.local/bin/swa
 # Custom:
 #
     bindsym --release Mod4+L exec ~/.local/bin/swaylock -f && systemctl suspend
-    # Lock only (no suspend) so audio keeps playing — lighter blur, more see-through
+    # Lock only (no suspend) so audio keeps playing - lighter blur, more see-through
     bindsym --release Mod4+semicolon exec ~/.local/bin/swaylock -f --effect-blur 4x2
 
 # User added by Bram

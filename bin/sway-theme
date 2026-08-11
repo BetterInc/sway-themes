@@ -1,5 +1,5 @@
 #!/bin/sh
-# sway-theme — list or switch sway-themes.
+# sway-theme - list or switch sway-themes.
 #
 #   sway-theme            list available themes (* = active)
 #   sway-theme <name>     switch to theme <name> and reload the desktop
