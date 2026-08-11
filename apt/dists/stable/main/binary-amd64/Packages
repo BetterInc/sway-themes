@@ -1,21 +1,21 @@
 Package: mpvpaper
-Version: 1.9+bi0.1.5
+Version: 1.9+bi0.1.6
 Architecture: amd64
 Maintainer: BetterInc <noreply@github.com>
 Depends: libc6 (>= 2.34), libegl1, libmpv2 (>= 0.29), libwayland-client0 (>= 1.20.0), libwayland-egl1 (>= 1.15.0)
 Homepage: https://github.com/GhostNaN/mpvpaper
 Priority: optional
 Section: video
-Filename: pool/main/m/mpvpaper/mpvpaper_1.9+bi0.1.5_amd64.deb
-Size: 36416
-SHA256: 62d210ed4969074aea3ba169a23224d77aca50ced7681b5c9684ab099db9a57a
-SHA1: 75807e8b6047d81571a4bbd262b84a9a333ec1c9
-MD5sum: c0e9c30f8d4ef270066f30e743f6516a
+Filename: pool/main/m/mpvpaper/mpvpaper_1.9+bi0.1.6_amd64.deb
+Size: 36476
+SHA256: c42316e18ee1cf6d8ebd8cb4f55c3360216f56be30fe6e386f767235ae18915d
+SHA1: 89322063a32889676ebe9820ef7cad032109f528
+MD5sum: d3a1ac414a3c486e7a2144b79f32a3b4
 Description: video wallpaper program for wlroots compositors
  Plays videos with mpv as your wallpaper.
 
 Package: sway-themes
-Version: 0.1.5
+Version: 0.1.6
 Architecture: all
 Maintainer: BetterInc <noreply@github.com>
 Depends: swayfx, swaylock-effects, waybar, foot, rofi, swaybg, swayidle, dunst, fonts-font-awesome
@@ -23,18 +23,18 @@ Recommends: mpvpaper, ffmpeg
 Homepage: https://github.com/BetterInc/sway-themes
 Priority: optional
 Section: x11
-Filename: pool/main/s/sway-themes/sway-themes_0.1.5_all.deb
-Size: 2350856
-SHA256: 9083466f403759d607a9a95c7984cf79c70c17386ed7e525d42a6f90369aac7f
-SHA1: 1cf49bb1a630d349cbab1df3bcf467761b3cb880
-MD5sum: 1ac894cbdaf7d881bcf575aaf5b2c971
+Filename: pool/main/s/sway-themes/sway-themes_0.1.6_all.deb
+Size: 2351316
+SHA256: dfa8357f9847b30b65e6b48f3c0dae9f3ffa183033bf4e141b100311acb5b16a
+SHA1: 33f67a208fa6f2afb12b40649933609ffa45187d
+MD5sum: bdd3104e8c628b45cffca45f5f366b8f
 Description: themeable SwayFX rice (matrix, purple, ...)
  Switchable desktop themes for sway/swayfx covering waybar, foot, rofi,
  swaylock, dunst and animated wallpapers. Run sway-themes-setup to
  activate for your user.
 
 Package: swayfx
-Version: 0.3.2+bi0.1.5
+Version: 0.3.2+bi0.1.6
 Architecture: amd64
 Maintainer: BetterInc <noreply@github.com>
 Depends: libc6 (>= 2.34), libcairo2 (>= 1.10.0), libdrm2 (>= 2.4.113), libegl1, libevdev2 (>= 0.9.1), libgbm1 (>= 21.1.0), libgles2, libglib2.0-0 (>= 2.12.0), libinput10 (>= 1.21.0), libjson-c5 (>= 0.15), libpango-1.0-0 (>= 1.22.0), libpangocairo-1.0-0 (>= 1.22.0), libpcre2-8-0 (>= 10.22), libpixman-1-0 (>= 0.27.4), libseat1 (>= 0.5.0), libudev1 (>= 183), libvulkan1 (>= 1.2.131.2), libwayland-client0 (>= 1.20.0), libwayland-cursor0 (>= 1.0.2), libwayland-server0 (>= 1.20.92), libxcb-composite0, libxcb-icccm4 (>= 0.4.1), libxcb-render0, libxcb-res0 (>= 1.10), libxcb-xfixes0 (>= 1.15), libxcb1, libxkbcommon0 (>= 0.7.0)
@@ -44,17 +44,17 @@ Replaces: sway, sway-backgrounds
 Homepage: https://github.com/WillPower3309/swayfx
 Priority: optional
 Section: x11
-Filename: pool/main/s/swayfx/swayfx_0.3.2+bi0.1.5_amd64.deb
-Size: 656904
-SHA256: 53d6da993c84d4eba4809b91398e5eb1605cbf85ba4eabfb49b82f02db81a57b
-SHA1: 18824368a4049d422c274886b5c9d8866ab29e92
-MD5sum: 63a6a4caceafcfa5fc5dbecf1c5e03dd
+Filename: pool/main/s/swayfx/swayfx_0.3.2+bi0.1.6_amd64.deb
+Size: 656596
+SHA256: 892ddc9cce83fca7512c457fcc27de0bbb9482460d1b012e1327326a4c1115d3
+SHA1: 2e5874c9f4b03b8b4c80776c6b6530dd210b87dd
+MD5sum: b6714c6f56b6f468fd0dd3ef1d00dd21
 Description: SwayFX compositor - sway with blur, rounded corners and shadows
  Built from swayfx 0.3.2 with wlroots 0.16.2 statically linked.
  Installs as /usr/bin/sway, replacing the sway package.
 
 Package: swaylock-effects
-Version: 1.7.0+bi0.1.5
+Version: 1.7.0+bi0.1.6
 Architecture: amd64
 Maintainer: BetterInc <noreply@github.com>
 Depends: libc6 (>= 2.34), libcairo2 (>= 1.2.4), libgdk-pixbuf-2.0-0 (>= 2.31.1), libglib2.0-0 (>= 2.12.0), libgomp1 (>= 4.9), libpam0g (>= 0.99.7.1), libwayland-client0 (>= 1.20.0), libxkbcommon0 (>= 0.5.0)
@@ -64,11 +64,11 @@ Replaces: swaylock
 Homepage: https://github.com/jirutka/swaylock-effects
 Priority: optional
 Section: x11
-Filename: pool/main/s/swaylock-effects/swaylock-effects_1.7.0+bi0.1.5_amd64.deb
-Size: 49944
-SHA256: c1e8709e9ece98a388c74e5d136c4092aeb8307e9eb2bb966a160c6723092f2b
-SHA1: 5fbaaf43bcf5529c4fa4b428cad89ccb6a507d80
-MD5sum: 52f5531bf0c5419a8474c87550764d1e
+Filename: pool/main/s/swaylock-effects/swaylock-effects_1.7.0+bi0.1.6_amd64.deb
+Size: 49900
+SHA256: 7ef7d166fcb1cdca7cdf0c9021a46eb435597bd3a0ddd85097c704fd519045f5
+SHA1: d96056b711e667e9f9496596078efe4ea6940520
+MD5sum: 3ffa517968e49c63984917b363ac4931
 Description: swaylock fork with fancy effects
  Screen locker for Wayland with blur, clock and effects.
 
