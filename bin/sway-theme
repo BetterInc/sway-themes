@@ -54,6 +54,15 @@ else
     : > "$HOME/.config/waybar/shape.css" 2>/dev/null || true
 fi
 
+# Waybar module layout: themes may ship a whole waybar-config (different
+# modules, bar position, ...). The bar runs from config-active, composed
+# here - your own ~/.config/waybar/config is the base and is never touched.
+if [ -f "$theme_dir/waybar-config" ]; then
+    cp "$theme_dir/waybar-config" "$HOME/.config/waybar/config-active" 2>/dev/null || true
+else
+    cp "$HOME/.config/waybar/config" "$HOME/.config/waybar/config-active" 2>/dev/null || true
+fi
+
 # Recolor already-running terminals in place: push the new palette as OSC
 # escape sequences (OSC 4 = palette, 10/11/12 = fg/bg/cursor) to every PTY
 # we own. foot applies them immediately; no restart needed.
@@ -93,5 +102,14 @@ rm -f "${XDG_RUNTIME_DIR:-/tmp}/wallpaper-power.state"
 pkill -x mpvpaper 2>/dev/null || true
 pkill -x swaybg 2>/dev/null || true
 "$HOME/.config/sway/scripts/wallpaper-power.sh" || true
+
+# Theme hook: the escape hatch. If the theme ships hook.sh it runs now,
+# after everything else - use it for gsettings (GTK dark/light), other
+# terminals, editor themes, keyboard RGB, anything sway-themes does not
+# know about. It is your own theme's script, executed as you.
+if [ -f "$theme_dir/hook.sh" ]; then
+    THEME_NAME="$theme" THEME_DIR="$theme_dir" sh "$theme_dir/hook.sh" || \
+        echo "warning: $theme_dir/hook.sh exited non-zero" >&2
+fi
 
 echo "Switched to '$theme' ($theme_dir)."

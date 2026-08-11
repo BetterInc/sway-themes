@@ -111,6 +111,7 @@ cfg  "$REPO/config/waybar/structure.css"  "$CONF/waybar/structure.css"
 link "$REPO/config/waybar/battery.sh"     "$CONF/waybar/battery.sh"
 link "../sway-themes/current/waybar-colors.css" "$CONF/waybar/colors.css"
 [ -f "$CONF/waybar/shape.css" ] || : > "$CONF/waybar/shape.css"
+[ -f "$CONF/waybar/config-active" ] || cp "$CONF/waybar/config" "$CONF/waybar/config-active"
 # foot
 cfg  "$REPO/config/foot/foot.ini"         "$CONF/foot/foot.ini"
 link "../sway-themes/current/foot-colors.ini"   "$CONF/foot/theme.ini"

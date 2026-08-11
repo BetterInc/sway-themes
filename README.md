@@ -81,8 +81,11 @@ live.
 
 A theme is just a directory of color files - each optional:
 `sway-colors.conf`, `waybar-colors.css`, `waybar-shape.css` (optional bar
-shape overrides, e.g. `border-radius: 0`), `foot-colors.ini`, `rofi.rasi`,
-`swaylock.config`, `dunstrc`, `wallpaper.mp4`, `wallpaper-still.png`.
+shape overrides, e.g. `border-radius: 0`), `waybar-config` (optional whole
+bar layout: different modules, bottom bar, ...), `foot-colors.ini`,
+`rofi.rasi`, `swaylock.config`, `dunstrc`, `hook.sh` (optional script run
+on switch - GTK dark/light via gsettings, editor themes, keyboard RGB,
+anything), `wallpaper.mp4`, `wallpaper-still.png`.
 PRs with new themes are welcome.
 
 Themes can also override the SwayFX look, not just colors: anything set in
