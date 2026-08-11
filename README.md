@@ -54,19 +54,30 @@ Only upgrading the swayfx binary itself ever needs a re-login.
 
 ## Make your own theme
 
-Setup already created a starter for you:
-`~/.config/sway-themes/themes/example` - a full editable copy of the matrix
-colors with a generated animated-gradient wallpaper. Edit its files and run
-`sway-theme example`.
+Setup already created a starter theme owned by you, no root needed:
 
-More themes live in the same place and work without touching this repo
-(user themes win on name conflicts):
+```
+~/.config/sway-themes/themes/example
+```
+
+It is a complete theme with its own teal palette - every file is plain text
+(sway colors, waybar palette, foot terminal colors, rofi, swaylock, dunst)
+plus a generated animated-gradient wallpaper. Edit anything in it and run
+`sway-theme example` to see your changes.
+
+Making a new theme is literally one copy - duplicate the example (or any
+theme) under a new name in the same directory:
 
 ```sh
 cp -r ~/.config/sway-themes/themes/example ~/.config/sway-themes/themes/mytheme
-$EDITOR ~/.config/sway-themes/themes/mytheme/*
+$EDITOR ~/.config/sway-themes/themes/mytheme/*   # change the colors
 sway-theme mytheme
 ```
+
+Everything under `~/.config/sway-themes/themes/` is yours: it never needs
+sudo, survives apt upgrades, and wins over shipped themes on name conflicts.
+No rebuild, no reload commands to remember - `sway-theme <name>` applies it
+live.
 
 A theme is just a directory of color files - each optional:
 `sway-colors.conf`, `waybar-colors.css`, `foot-colors.ini`, `rofi.rasi`,
