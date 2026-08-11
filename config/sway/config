@@ -242,11 +242,11 @@ bindsym $mod+r mode "resize"
 # Status Bar:
 #
 # Read `man 5 sway-bar` for more information about this section.
-bar {
-    # config-active is composed by sway-theme: the theme's waybar-config
-    # if it ships one, otherwise your own ~/.config/waybar/config
-    swaybar_command waybar -c ~/.config/waybar/config-active
-}
+# Waybar runs standalone (no bar{} block: sway does not expand ~ in
+# swaybar_command, and exec_always restarts the bar reliably on reload).
+# config-active is composed by sway-theme: the theme's waybar-config if it
+# ships one, otherwise your own ~/.config/waybar/config.
+exec_always sh -c 'pkill -x waybar; waybar -c ~/.config/waybar/config-active &'
 
 include /etc/sway/config.d/*
 
