@@ -7,3 +7,9 @@ Optional - make the loop seam invisible (blends the last second into the first):
   ffmpeg -i in.mp4 -filter_complex "[0:v]split[b][p];[p]trim=0:1,setpts=PTS-STARTPTS[f];[b]trim=start=1,setpts=PTS-STARTPTS[m];[m][f]xfade=transition=fade:duration=1:offset=$(echo "$D-2" | bc)" -an matrix.mp4
 
 Without a video, the theme falls back to wallpaper-still.png at all times.
+
+More ffmpeg recipes for adapting any video:
+  # recolor (shift hue by degrees)
+  ffmpeg -i in.mp4 -vf hue=h=200 -an out.mp4
+  # colorize a black & white clip green
+  ffmpeg -i in.mp4 -vf "colorchannelmixer=rr=0.15:gg=1.0:bb=0.3" -an out.mp4

@@ -102,27 +102,18 @@ Save location - either works, the user directory wins if both exist:
   `/usr/share/sway-themes/themes/<theme>/wallpaper.mp4` (needs sudo, and
   dpkg leaves manually added files alone on upgrades)
 
-**Bring your own video** - the linked ones are just suggestions. Any mp4
-you like becomes the wallpaper for a theme by dropping it in the user
-directory and re-applying:
+Why not bundled? Licensing: the suggested videos are under the
+[Pixabay Content License](https://pixabay.com/service/license-summary/),
+which gives *you* the right to download and use them freely - but does not
+allow redistributing the files themselves, so this repo and the .deb
+packages cannot ship them. Downloading from the links above is the
+legitimate route. Any video you have the rights to works the same way -
+drop it in the user directory as `<theme>.mp4` and re-run
+`sway-theme <theme>`.
 
-```sh
-cp my-favorite-loop.mp4 ~/.config/sway-themes/wallpapers/matrix.mp4
-sway-theme matrix
-```
-
-No video? The theme just uses its committed still full-time. Handy ffmpeg
-one-liners for adapting a video you like:
-
-```sh
-# recolor (shift hue by degrees)
-ffmpeg -i in.mp4 -vf hue=h=200 -an out.mp4
-# colorize a black & white clip green
-ffmpeg -i in.mp4 -vf "colorchannelmixer=rr=0.15:gg=1.0:bb=0.3" -an out.mp4
-# hide a visible loop seam (blend last second into the first)
-D=$(ffprobe -v error -show_entries format=duration -of csv=p=0 in.mp4)
-ffmpeg -i in.mp4 -filter_complex "[0:v]split[b][p];[p]trim=0:1,setpts=PTS-STARTPTS[f];[b]trim=start=1,setpts=PTS-STARTPTS[m];[m][f]xfade=transition=fade:duration=1:offset=$(echo "$D-2" | bc)" -an out.mp4
-```
+No video? The theme just uses its committed still full-time. Recipes for
+adapting videos (recolor, colorize, hide a loop seam) are in each theme's
+`WALLPAPER-SOURCE.txt`.
 
 ## How it works
 
