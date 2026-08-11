@@ -1,4 +1,9 @@
-Wallpaper: any green "digital rain" loop works. A good free one (HD, 20s, dark katakana code):
-  https://pixabay.com/videos/matrix-digits-numbers-letters-49470/  (Pixabay Content License)
-Download it as wallpaper.mp4 into this directory. Without it, the theme
-falls back to wallpaper-still.png at all times.
+Wallpaper: green digital rain, 4K, 30s:
+  https://pixabay.com/videos/matrix-computer-network-47802/  (Pixabay Content License)
+Save as ~/.config/sway-themes/wallpapers/matrix.mp4 (or this directory).
+
+Optional - make the loop seam invisible (blends the last second into the first):
+  D=$(ffprobe -v error -show_entries format=duration -of csv=p=0 in.mp4)
+  ffmpeg -i in.mp4 -filter_complex "[0:v]split[b][p];[p]trim=0:1,setpts=PTS-STARTPTS[f];[b]trim=start=1,setpts=PTS-STARTPTS[m];[m][f]xfade=transition=fade:duration=1:offset=$(echo "$D-2" | bc)" -an matrix.mp4
+
+Without a video, the theme falls back to wallpaper-still.png at all times.

@@ -92,7 +92,7 @@ from Pixabay into the theme directory:
 
 | theme | video (Pixabay Content License) | save as |
 |---|---|---|
-| matrix | [green digital rain](https://pixabay.com/videos/matrix-digits-numbers-letters-49470/) | `~/.config/sway-themes/wallpapers/matrix.mp4` |
+| matrix | [green digital rain, 4K 30s](https://pixabay.com/videos/matrix-computer-network-47802/) | `~/.config/sway-themes/wallpapers/matrix.mp4` |
 | purple | [dark plexus constellation](https://pixabay.com/videos/plexus-abstract-background-colorful-57860/) | `~/.config/sway-themes/wallpapers/purple.mp4` |
 
 Save location - either works, the user directory wins if both exist:
