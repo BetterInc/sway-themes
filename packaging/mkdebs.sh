@@ -114,6 +114,7 @@ cp -r "$REPO/config" "$REPO/themes" "$REPO/bin" \
 # wallpaper videos are never distributed (see WALLPAPER-SOURCE.txt per theme)
 rm -f $S/usr/share/sway-themes/themes/*/wallpaper.mp4
 ln -s ../share/sway-themes/bin/sway-theme $S/usr/bin/sway-theme
+ln -s sway-theme $S/usr/bin/sway-themes   # alias: people type the package name
 # per-user setup entry point (a package cannot symlink into $HOME itself)
 cat > $S/usr/bin/sway-themes-setup <<'SETUP'
 #!/bin/sh

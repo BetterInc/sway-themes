@@ -102,8 +102,9 @@ link "../sway-themes/current/rofi.rasi"         "$CONF/rofi/theme.rasi"
 link "../sway-themes/current/swaylock.config"   "$CONF/swaylock/config"
 # dunst (notifications - whole config is per-theme, dunst <1.10 has no includes)
 link "../sway-themes/current/dunstrc"           "$CONF/dunst/dunstrc"
-# theme switcher on PATH
+# theme switcher on PATH (plus alias matching the package name)
 link "$REPO/bin/sway-theme"               "$HOME/.local/bin/sway-theme"
+link "$REPO/bin/sway-theme"               "$HOME/.local/bin/sway-themes"
 
 # ------------------------------------------------------------- default theme
 mkdir -p "$CONF/sway-themes/themes"   # drop your own themes here
@@ -115,6 +116,8 @@ fi
 chmod +x "$REPO"/bin/* "$REPO"/config/sway/scripts/*.sh "$REPO"/config/waybar/battery.sh 2>/dev/null || true
 
 echo "==> Done. Switch themes with:  sway-theme <name>   (list: sway-theme)"
+echo "    Not in sway yet? Log out (swaymsg exit, or Mod+Shift+e once in sway)"
+echo "    and log back in - sway starts from your login shell/greeter."
 echo "    Apply now with:  swaymsg reload   (or Mod+Shift+c) - reloads sway,"
 echo "    waybar, wallpaper, rofi and swaylock in place. Only replacing the"
 echo "    compositor binary itself (installing/upgrading swayfx) needs a re-login."
