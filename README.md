@@ -102,8 +102,27 @@ Save location - either works, the user directory wins if both exist:
   `/usr/share/sway-themes/themes/<theme>/wallpaper.mp4` (needs sudo, and
   dpkg leaves manually added files alone on upgrades)
 
-No video? The theme just uses its committed still full-time. Any loop you
-like works - tip: `ffmpeg -i in.mp4 -vf hue=h=200 -an out.mp4` recolors one.
+**Bring your own video** - the linked ones are just suggestions. Any mp4
+you like becomes the wallpaper for a theme by dropping it in the user
+directory and re-applying:
+
+```sh
+cp my-favorite-loop.mp4 ~/.config/sway-themes/wallpapers/matrix.mp4
+sway-theme matrix
+```
+
+No video? The theme just uses its committed still full-time. Handy ffmpeg
+one-liners for adapting a video you like:
+
+```sh
+# recolor (shift hue by degrees)
+ffmpeg -i in.mp4 -vf hue=h=200 -an out.mp4
+# colorize a black & white clip green
+ffmpeg -i in.mp4 -vf "colorchannelmixer=rr=0.15:gg=1.0:bb=0.3" -an out.mp4
+# hide a visible loop seam (blend last second into the first)
+D=$(ffprobe -v error -show_entries format=duration -of csv=p=0 in.mp4)
+ffmpeg -i in.mp4 -filter_complex "[0:v]split[b][p];[p]trim=0:1,setpts=PTS-STARTPTS[f];[b]trim=start=1,setpts=PTS-STARTPTS[m];[m][f]xfade=transition=fade:duration=1:offset=$(echo "$D-2" | bc)" -an out.mp4
+```
 
 ## How it works
 
