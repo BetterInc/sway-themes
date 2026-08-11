@@ -103,11 +103,14 @@ cfg  "$REPO/config/sway/config"           "$CONF/sway/config"
 link "$REPO/config/sway/scripts"          "$CONF/sway/scripts"
 link "$REPO/config/sway/set_env_vars.sh"  "$CONF/sway/set_env_vars.sh"
 link "$REPO/config/sway/status.sh"        "$CONF/sway/status.sh"
-# waybar (colors.css points into the active theme)
+# waybar (colors.css points into the active theme; shape.css is refreshed
+# by sway-theme from the theme's optional waybar-shape.css)
 cfg  "$REPO/config/waybar/config"         "$CONF/waybar/config"
 cfg  "$REPO/config/waybar/style.css"      "$CONF/waybar/style.css"
+cfg  "$REPO/config/waybar/structure.css"  "$CONF/waybar/structure.css"
 link "$REPO/config/waybar/battery.sh"     "$CONF/waybar/battery.sh"
 link "../sway-themes/current/waybar-colors.css" "$CONF/waybar/colors.css"
+[ -f "$CONF/waybar/shape.css" ] || : > "$CONF/waybar/shape.css"
 # foot
 cfg  "$REPO/config/foot/foot.ini"         "$CONF/foot/foot.ini"
 link "../sway-themes/current/foot-colors.ini"   "$CONF/foot/theme.ini"

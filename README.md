@@ -80,7 +80,8 @@ No rebuild, no reload commands to remember - `sway-theme <name>` applies it
 live.
 
 A theme is just a directory of color files - each optional:
-`sway-colors.conf`, `waybar-colors.css`, `foot-colors.ini`, `rofi.rasi`,
+`sway-colors.conf`, `waybar-colors.css`, `waybar-shape.css` (optional bar
+shape overrides, e.g. `border-radius: 0`), `foot-colors.ini`, `rofi.rasi`,
 `swaylock.config`, `dunstrc`, `wallpaper.mp4`, `wallpaper-still.png`.
 PRs with new themes are welcome.
 
@@ -90,7 +91,10 @@ example a sharp-cornered theme adds `corner_radius 0` there; rounded themes
 simply do not set it. Note for existing installs: your sway config is your
 own editable copy, so this ordering only lands automatically on fresh
 setups - to adopt it, move the `include ~/.config/sway-themes/current/...`
-line below the SwayFX block in `~/.config/sway/config`.
+line below the SwayFX block in `~/.config/sway/config`. Likewise for
+per-theme bar shapes on an existing install: copy the new
+`config/waybar/style.css` and `config/waybar/structure.css` over your
+copies in `~/.config/waybar/` (or delete yours and re-run setup).
 
 ## Wallpapers
 

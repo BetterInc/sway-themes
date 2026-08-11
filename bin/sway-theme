@@ -44,6 +44,16 @@ fi
 mkdir -p "$HOME/.config/sway-themes"
 ln -sfn "$theme_dir" "$CURRENT_LINK"
 
+# Waybar shape override: themes may ship waybar-shape.css (e.g. square
+# corners); themes without one get the rounded structure.css defaults.
+# A real file (not a symlink) so a missing per-theme file never leaves a
+# dangling CSS import.
+if [ -f "$theme_dir/waybar-shape.css" ]; then
+    cp "$theme_dir/waybar-shape.css" "$HOME/.config/waybar/shape.css" 2>/dev/null || true
+else
+    : > "$HOME/.config/waybar/shape.css" 2>/dev/null || true
+fi
+
 # Recolor already-running terminals in place: push the new palette as OSC
 # escape sequences (OSC 4 = palette, 10/11/12 = fg/bg/cursor) to every PTY
 # we own. foot applies them immediately; no restart needed.
