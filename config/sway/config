@@ -43,10 +43,8 @@ default_floating_border pixel 2
 # Wifi picker opened from the bar floats in the middle of the screen
 for_window [app_id="nmtui"] floating enable, resize set 700 500
 
-# Window colors + shadow tint live in the theme
-include ~/.config/sway-themes/current/sway-colors.conf
-
-# SwayFX eye-candy (vanilla sway logs these as unknown commands and carries on)
+# SwayFX eye-candy defaults (vanilla sway logs these as unknown commands
+# and carries on)
 corner_radius 12
 smart_corner_radius enable
 blur enable
@@ -55,6 +53,11 @@ blur_radius 4
 shadows enable
 shadow_blur_radius 18
 default_dim_inactive 0.08
+
+# Window colors + shadow tint live in the theme. Included AFTER the
+# defaults above so a theme may override them (e.g. corner_radius 0
+# for a squared look, different shadow color, blur off, ...).
+include ~/.config/sway-themes/current/sway-colors.conf
 # Unfocused windows become translucent (focused stays solid) - tiny IPC watcher
 exec_always ~/.config/sway/scripts/inactive-opacity.sh
 #

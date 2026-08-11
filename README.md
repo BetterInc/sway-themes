@@ -84,6 +84,14 @@ A theme is just a directory of color files - each optional:
 `swaylock.config`, `dunstrc`, `wallpaper.mp4`, `wallpaper-still.png`.
 PRs with new themes are welcome.
 
+Themes can also override the SwayFX look, not just colors: anything set in
+`sway-colors.conf` wins over the defaults (it is included after them). For
+example a sharp-cornered theme adds `corner_radius 0` there; rounded themes
+simply do not set it. Note for existing installs: your sway config is your
+own editable copy, so this ordering only lands automatically on fresh
+setups - to adopt it, move the `include ~/.config/sway-themes/current/...`
+line below the SwayFX block in `~/.config/sway/config`.
+
 ## Wallpapers
 
 Animated wallpapers play on AC power (mpvpaper) and drop to a still image
