@@ -49,8 +49,9 @@ jobs:
           test -x "$HOME/.local/bin/swaylock"
           test -x "$HOME/.local/bin/mpvpaper"
           command -v waybar foot rofi swaybg swayidle dunst
-          test -L "$HOME/.config/sway/config"
-          test -L "$HOME/.config/dunst/dunstrc"
+          test -f "$HOME/.config/sway/config"   # editable copy, not a symlink
+          test ! -L "$HOME/.config/sway/config"
+          test -L "$HOME/.config/dunst/dunstrc" # theme part stays symlinked
           readlink -f "$HOME/.config/sway-themes/current" | grep -q themes/matrix
           # validate the sway config end-to-end through the theme symlinks
           "$HOME/.local/bin/sway" -C -c "$HOME/.config/sway/config" || true

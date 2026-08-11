@@ -81,22 +81,38 @@ link() { # link <target> <linkpath>
     echo "   $2 -> $1"
 }
 
-echo "==> Linking configs into ~/.config"
-# sway
-link "$REPO/config/sway/config"           "$CONF/sway/config"
+# App configs (keybindings, bar modules, fonts) are normal files in
+# ~/.config - owned and edited by the user like any dotfile. Only theme
+# machinery is symlinked. A real file already there is never overwritten
+# (re-running setup keeps your edits); old symlinks are upgraded to copies.
+cfg() { # cfg <source> <path>
+    if [ -L "$2" ] || [ ! -e "$2" ]; then
+        mkdir -p "$(dirname "$2")"
+        rm -f "$2"
+        cp "$1" "$2"
+        echo "   $2 (your editable copy)"
+    else
+        echo "   $2 kept (already yours)"
+    fi
+}
+
+echo "==> Installing configs into ~/.config (editable copies; theme parts symlinked)"
+# sway - the config is yours to edit; helper scripts stay linked so fixes
+# arrive with upgrades
+cfg  "$REPO/config/sway/config"           "$CONF/sway/config"
 link "$REPO/config/sway/scripts"          "$CONF/sway/scripts"
 link "$REPO/config/sway/set_env_vars.sh"  "$CONF/sway/set_env_vars.sh"
 link "$REPO/config/sway/status.sh"        "$CONF/sway/status.sh"
 # waybar (colors.css points into the active theme)
-link "$REPO/config/waybar/config"         "$CONF/waybar/config"
-link "$REPO/config/waybar/style.css"      "$CONF/waybar/style.css"
+cfg  "$REPO/config/waybar/config"         "$CONF/waybar/config"
+cfg  "$REPO/config/waybar/style.css"      "$CONF/waybar/style.css"
 link "$REPO/config/waybar/battery.sh"     "$CONF/waybar/battery.sh"
 link "../sway-themes/current/waybar-colors.css" "$CONF/waybar/colors.css"
 # foot
-link "$REPO/config/foot/foot.ini"         "$CONF/foot/foot.ini"
+cfg  "$REPO/config/foot/foot.ini"         "$CONF/foot/foot.ini"
 link "../sway-themes/current/foot-colors.ini"   "$CONF/foot/theme.ini"
 # rofi
-link "$REPO/config/rofi/config.rasi"      "$CONF/rofi/config.rasi"
+cfg  "$REPO/config/rofi/config.rasi"      "$CONF/rofi/config.rasi"
 link "../sway-themes/current/rofi.rasi"         "$CONF/rofi/theme.rasi"
 # swaylock
 link "../sway-themes/current/swaylock.config"   "$CONF/swaylock/config"

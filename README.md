@@ -123,10 +123,14 @@ themes/matrix        green rain
 themes/purple        neon violet
 ```
 
-The installer only touches symlinks under `~/.config` and
-`~/.local/bin/sway-theme` - never system files. CI installs the full rice
-on Debian 12, Ubuntu 24.04, Arch and Fedora, boots it headless and
-screenshots it (see the Actions artifacts).
+Setup puts the app configs (sway keybindings, waybar layout, foot, rofi) in
+`~/.config` as normal files you own and edit - no sudo, and re-running setup
+never overwrites a file you changed. Only the theme machinery is symlinked
+(the `current` pointer and per-app color includes), which is what makes
+`sway-theme` switches instant. Nothing outside `~/.config` and
+`~/.local/bin` is touched. CI installs the full rice on Debian 12, Ubuntu
+24.04, Arch and Fedora, boots it headless and screenshots it (see the
+Actions artifacts).
 
 ## Requirements (source install only)
 
